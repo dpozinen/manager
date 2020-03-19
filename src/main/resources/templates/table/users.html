@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Table V02</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--===============================================================================================-->
+    <link rel="icon" type="image/png" th:href="@{/table/images/icons/favicon.ico}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/table/vendor/bootstrap/css/bootstrap.min.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/table/fonts/font-awesome-4.7.0/css/font-awesome.min.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/table/vendor/animate/animate.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/table/vendor/select2/select2.min.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/table/vendor/perfect-scrollbar/perfect-scrollbar.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/table/css/util.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/table/css/main.css}">
+    <!--===============================================================================================-->
+</head>
+<body>
+
+<div class="limiter">
+    <div class="container-table100">
+        <div class="wrap-table100">
+            <table class="table" id="users">
+                <tbody>
+                <tr class="row header">
+                    <th class="cell">Id</th>
+                    <th class="cell">Name</th>
+                    <th class="cell">LastName</th>
+                    <th class="cell">Phone</th>
+                </tr>
+
+                <tr class="row" th:each="user : ${users}" th:href="@{/user/{id} (id=${user.id()})}">
+                    <td class="cell" data-title="Id" th:text="${user.id()}"></td>
+                    <td class="cell" data-title="Name" th:text="${user.name()}"></td>
+                    <td class="cell" data-title="LastName" th:text="${user.lastName()}"></td>
+                    <td class="cell" data-title="Phone" th:text="${user.phone()}"></td>
+                </tr>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+<!--===============================================================================================-->
+<script th:src="@{/table/vendor/jquery/jquery-3.2.1.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/table/vendor/bootstrap/js/popper.js}"></script>
+<script th:src="@{/table/vendor/bootstrap/js/bootstrap.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/table/vendor/select2/select2.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/table/js/main.js}"></script>
+
+<script>
+$(document).ready(function() {
+    $('#users tr').click(function() {
+        var href = $(this).attr("href");
+        if(href) {
+            window.location = href;
+        }
+    });
+});
+</script>
+</body>
+</html>
