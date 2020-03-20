@@ -32,42 +32,35 @@ public class DefaultUserService implements UserService {
 	@Override
 	public Set<Worker> workers() {
 		return StreamSupport.stream(userRepo.findAll().spliterator(), false)
-							.filter(u -> u instanceof Worker)
-							.map(u -> (Worker)u)
+							.filter(User::isWorker)
+							.map(User::toWorker)
 							.collect(toSet());
 	}
 
 	@Override
 	public Set<Client> clients() {
 		return StreamSupport.stream(userRepo.findAll().spliterator(), false)
-							.filter(u -> u instanceof Client)
-							.map(u -> (Client)u)
+							.filter(User::isClient)
+							.map(User::toClient)
 							.collect(toSet());
 	}
 
 	@Override
-	public Client saveClient(Client client) {
+	public Client save(Client client) {
 		return userRepo.save(client);
 	}
 
 	@Override
-	public Worker saveWorker(Worker worker) {
+	public Worker save(Worker worker) {
 		return userRepo.save(worker);
 	}
 
 	@Override
-	public Client getClient(Long id) {
-		return (Client) userRepo.findById(id).orElseGet(() -> {
+	public User getUser(Long id) {
+		return userRepo.findById(id).orElseGet(() -> {
 			log.warn("Could not find user by id" + id);
 			return null;
 		});
 	}
 
-	@Override
-	public Worker getWorker(Long id) {
-		return (Worker) userRepo.findById(id).orElseGet(() -> {
-			log.warn("Could not find user by id" + id);
-			return null;
-		});
-	}
 }

@@ -15,9 +15,8 @@ public interface UserService {
 	Set<Worker> workers();
 	Set<Client> clients();
 
-	Client saveClient(Client client);
-	Worker saveWorker(Worker worker);
+	Client save(Client client);
+	Worker save(Worker worker);
 
-	Client getClient(Long id);
-	Worker getWorker(Long id);
+	User getUser(Long id);
 }

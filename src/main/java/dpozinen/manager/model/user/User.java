@@ -12,14 +12,17 @@ import java.util.Set;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract @Data class User {
+public @Data abstract class User {
 
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
 	private String lastName;
 	private String fatherName;
 	private String phone;
+	private String email;
+	private String password;
 
 	@ManyToMany
 	@JoinTable(name = "user_order",
@@ -27,4 +30,19 @@ public abstract @Data class User {
 			inverseJoinColumns = @JoinColumn(name = "order_id"))
 	private Set<Order> orders = new HashSet<>();
 
+	public static boolean isClient(User user) {
+		return user instanceof Client;
+	}
+
+	public static boolean isWorker(User user) {
+		return user instanceof Worker;
+	}
+
+	public static Worker toWorker(User user) {
+		return (Worker) user;
+	}
+
+	public static Client toClient(User user) {
+		return (Client) user;
+	}
 }
