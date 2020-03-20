@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+<body>
+<div class="container">
+    <div class="form-container">
+        <form action="#" th:action="@{/user/client/save}" th:object="${form}" method="post">
+            <div class="input-container">
+                <input type="text" th:field="${client.name}" placeholder="Name">
+            </div>
+            <div class="input-container">
+                <input type="text" th:field="${client.lastName}" placeholder="Last Name">
+            </div>
+            <div class="input-container">
+                <input type="text" th:field="${client.fatherName}" placeholder="Father Name">
+            </div>
+            <div class="input-container">
+                <input type="text" th:field="${client.phone}" placeholder="Phone">
+            </div>
+            <div class="input-container">
+                <input type="text" th:field="${client.email}" placeholder="e-mail">
+            </div>
+            <div class="input-container">
+                <input type="submit">
+            </div>
+            <div class="input-container">
+                <input type="reset">
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

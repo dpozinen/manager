@@ -35,11 +35,11 @@
                     <th class="cell">Phone</th>
                 </tr>
 
-                <tr class="row" th:each="user : ${users}" th:href="@{/user/{id} (id=${user.id()})}">
-                    <td class="cell" data-title="Id" th:text="${user.id()}"></td>
-                    <td class="cell" data-title="Name" th:text="${user.name()}"></td>
-                    <td class="cell" data-title="LastName" th:text="${user.lastName()}"></td>
-                    <td class="cell" data-title="Phone" th:text="${user.phone()}"></td>
+                <tr class="row" th:each="user : ${users}" th:href="@{/user/{id} (id=${user.id})}">
+                    <td class="cell" data-title="Id" th:text="${user.id}"></td>
+                    <td class="cell" data-title="Name" th:text="${user.name}"></td>
+                    <td class="cell" data-title="LastName" th:text="${user.lastName}"></td>
+                    <td class="cell" data-title="Phone" th:text="${user.phone}"></td>
                 </tr>
                 </tbody>
 
