@@ -27,7 +27,7 @@ public class UserController {
 
 		if (user instanceof Worker) {
 			model.addAttribute("worker", user);
-			return "-/user/worker";
+			return "/user/worker";
 		} else if (user instanceof Client) {
 			model.addAttribute("client", user);
 			return "/user/client";
@@ -50,13 +50,25 @@ public class UserController {
 	@GetMapping("/all")
 	public String all(Model model) {
 		model.addAttribute("users", service.users());
-		return "user/users";
+		return "/user/users";
 	}
 
 	@GetMapping("/register")
 	public String registerClient(Model model) {
 		model.addAttribute("client", new Client());
-		return "user/register";
+		return "/user/register";
+	}
+
+	@PostMapping("/do_login")
+	public String doLogin(Model model) {
+		var s = "s";
+		return "/user/login";
+	}
+
+	@GetMapping("/login")
+	public String login(Model model) {
+		var s = "s";
+		return "/user/login";
 	}
 
 }

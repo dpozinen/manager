@@ -30,19 +30,19 @@ public @Data abstract class User {
 			inverseJoinColumns = @JoinColumn(name = "order_id"))
 	private Set<Order> orders = new HashSet<>();
 
-	public static boolean isClient(User user) {
-		return user instanceof Client;
+	public boolean isClient() {
+		return this instanceof Client;
 	}
 
-	public static boolean isWorker(User user) {
-		return user instanceof Worker;
+	public boolean isWorker() {
+		return this instanceof Worker;
 	}
 
-	public static Worker toWorker(User user) {
-		return (Worker) user;
+	public Worker toWorker() {
+		return (Worker) this;
 	}
 
-	public static Client toClient(User user) {
-		return (Client) user;
+	public Client toClient() {
+		return (Client) this;
 	}
 }

@@ -1,4 +1,4 @@
-package dpozinen.manager.service;
+package dpozinen.manager.util;
 
 import dpozinen.manager.model.order.Order;
 import dpozinen.manager.model.order.OrderState;
@@ -27,16 +27,18 @@ public class DataInit {
 
 	@EventListener
 	public void populateOrdersAndUsers(ContextRefreshedEvent event) {
-		Worker workerA = (Worker) new Worker().salary(BigDecimal.ZERO).name("Kate").lastName("Park")
-											  .fatherName("Andrii").phone("+38(066) 207 0746");
+		Worker workerA = (Worker) new Worker().setSalary(BigDecimal.ZERO).setName("Kate").setLastName("Park")
+											  .setPassword("123")
+											  .setFatherName("Andrii").setPhone("+38(066) 207 0746");
 
-		Worker workerB = (Worker) new Worker().salary(BigDecimal.TEN).name("Dar").lastName("Poz")
-											  .fatherName("Andrii").phone("+38(050) 385 0660");
+		Worker workerB = (Worker) new Worker().setSalary(BigDecimal.TEN).setName("Dar").setLastName("Poz")
+											  .setPassword("123")
+											  .setFatherName("Andrii").setPhone("+38(050) 385 0660");
 
-		Order orderA = new Order().isPayed(false).price(BigDecimal.valueOf(12)).state(OrderState.QUEUED);
-		Order orderB = new Order().isPayed(true).price(BigDecimal.valueOf(12)).state(OrderState.DELAYED);
-		workerA.orders().add(orderA);
-		workerA.orders().add(orderB);
+		Order orderA = new Order().setIsPayed(false).setPrice(BigDecimal.valueOf(12)).setState(OrderState.QUEUED);
+		Order orderB = new Order().setIsPayed(true).setPrice(BigDecimal.valueOf(12)).setState(OrderState.DELAYED);
+		workerA.getOrders().add(orderA);
+		workerA.getOrders().add(orderB);
 
 		orderRepo.save(orderA);
 		orderRepo.save(orderB);
