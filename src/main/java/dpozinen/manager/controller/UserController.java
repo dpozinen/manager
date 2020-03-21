@@ -23,7 +23,7 @@ public class UserController {
 
 	@GetMapping("/{id}")
 	public String getUser(@PathVariable Long id, Model model) {
-		var user = service.getUser(id);
+		var user = service.getById(id);
 
 		if (user instanceof Worker) {
 			model.addAttribute("worker", user);
@@ -68,7 +68,12 @@ public class UserController {
 	@GetMapping("/login")
 	public String login(Model model) {
 		var s = "s";
-		return "/user/login";
+		return "/home";
+	}
+
+	@RequestMapping("/forbidden")
+	public String error403() {
+		return "/403";
 	}
 
 }
