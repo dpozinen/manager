@@ -23,7 +23,7 @@ public class DefaultUserDetails implements UserDetails {
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		Role role = user.isWorker() ? user.toWorker().getRole() : Role.USER;
-		return List.of(new SimpleGrantedAuthority(role.toString()));
+		return List.of(new SimpleGrantedAuthority(role.prefixed()));
 	}
 
 	@Override
