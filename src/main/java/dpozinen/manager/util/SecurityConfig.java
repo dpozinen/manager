@@ -37,20 +37,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/user/login").permitAll()
 			.anyRequest().authenticated()
 			.and()
-			.formLogin()
-//			.loginPage("/user/login")
-//			.loginProcessingUrl("/user/do_login")
-//			.defaultSuccessUrl("/homepage", true)
-//			.failureUrl("/forbidden")
+				.formLogin()
 			.and()
 				.exceptionHandling().accessDeniedPage("/forbidden")
-//////			.failureHandler(authenticationFailureHandler())
 			.and()
-			.logout()
-//			.logoutUrl("/perform_logout")
-			.deleteCookies("JSESSIONID")
-//			.logoutSuccessHandler();
-		;
+				.logout()
+				.deleteCookies("JSESSIONID");
 	}
 
 	@Bean
