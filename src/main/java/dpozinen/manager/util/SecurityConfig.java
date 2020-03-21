@@ -42,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //			.defaultSuccessUrl("/homepage", true)
 //			.failureUrl("/forbidden")
 			.and()
-				.exceptionHandling().accessDeniedPage("/user/forbidden")
+				.exceptionHandling().accessDeniedPage("/forbidden")
 //////			.failureHandler(authenticationFailureHandler())
 //			.and()
 //			.logout()
