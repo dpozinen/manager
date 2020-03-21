@@ -12,17 +12,18 @@ import java.util.Set;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public @Data abstract class User {
+public abstract @Data class User {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
 	private String lastName;
 	private String fatherName;
 	private String phone;
 	private String email;
+
 	private String password;
+	private String username;
 
 	@ManyToMany
 	@JoinTable(name = "user_order",

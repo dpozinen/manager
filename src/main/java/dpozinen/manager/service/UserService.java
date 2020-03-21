@@ -18,5 +18,7 @@ public interface UserService {
 	Client save(Client client);
 	Worker save(Worker worker);
 
-	User getUser(Long id);
+	User getById(Long id);
+	User getByUsername(String username);
+	User getByEmail(String email);
 }

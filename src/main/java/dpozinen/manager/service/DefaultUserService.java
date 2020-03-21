@@ -56,9 +56,25 @@ public class DefaultUserService implements UserService {
 	}
 
 	@Override
-	public User getUser(Long id) {
+	public User getById(Long id) {
 		return userRepo.findById(id).orElseGet(() -> {
-			log.warn("Could not find user by id" + id);
+			log.warn("Could not find user by id: " + id);
+			return null;
+		});
+	}
+
+	@Override
+	public User getByUsername(String username) {
+		return userRepo.findByUsername(username).orElseGet(() -> {
+			log.warn("Could not find user by username: " + username);
+			return null;
+		});
+	}
+
+	@Override
+	public User getByEmail(String email) {
+		return userRepo.findByUsername(email).orElseGet(() -> {
+			log.warn("Could not find user by email: " + email);
 			return null;
 		});
 	}
