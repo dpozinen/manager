@@ -45,10 +45,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.and()
 				.exceptionHandling().accessDeniedPage("/forbidden")
 //////			.failureHandler(authenticationFailureHandler())
-//			.and()
-//			.logout()
+			.and()
+			.logout()
 //			.logoutUrl("/perform_logout")
-//			.deleteCookies("JSESSIONID");
+			.deleteCookies("JSESSIONID")
 //			.logoutSuccessHandler();
 		;
 	}
