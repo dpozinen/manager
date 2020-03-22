@@ -5,6 +5,7 @@ import dpozinen.manager.model.user.User;
 import dpozinen.manager.model.user.Worker;
 import dpozinen.manager.repo.UserRepo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -19,9 +20,11 @@ import static java.util.stream.Collectors.toSet;
 public class DefaultUserService implements UserService {
 
 	private final UserRepo userRepo;
+	private final PasswordEncoder passwordEncoder;
 
-	public DefaultUserService(UserRepo userRepo) {
+	public DefaultUserService(UserRepo userRepo, PasswordEncoder passwordEncoder) {
 		this.userRepo = userRepo;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	@Override
@@ -47,11 +50,13 @@ public class DefaultUserService implements UserService {
 
 	@Override
 	public Client save(Client client) {
+		client.setPassword(passwordEncoder.encode(client.getPassword()));
 		return userRepo.save(client);
 	}
 
 	@Override
 	public Worker save(Worker worker) {
+		worker.setPassword(passwordEncoder.encode(worker.getPassword()));
 		return userRepo.save(worker);
 	}
 
