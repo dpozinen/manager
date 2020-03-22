@@ -59,16 +59,9 @@ public class UserController {
 		return "/user/register";
 	}
 
-	@PostMapping("/do_login")
-	public String doLogin(Model model) {
-		var s = "s";
-		return "/user/login";
-	}
-
 	@GetMapping("/login")
 	public String login(Model model) {
-		var s = "s";
-		return "/home";
+		return "/user/login";
 	}
 
 	@RequestMapping("/forbidden")
