@@ -8,6 +8,7 @@ import dpozinen.manager.repo.OrderRepo;
 import dpozinen.manager.repo.UserRepo;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -23,10 +24,10 @@ public class DataInit {
 	private final OrderRepo orderRepo;
 	private final PasswordEncoder encoder;
 
-	public DataInit(UserRepo userRepo, OrderRepo orderRepo, PasswordEncoder encoder) {
+	public DataInit(UserRepo userRepo, OrderRepo orderRepo) {
 		this.userRepo = userRepo;
 		this.orderRepo = orderRepo;
-		this.encoder = encoder;
+		this.encoder = new BCryptPasswordEncoder();
 	}
 
 	@EventListener
