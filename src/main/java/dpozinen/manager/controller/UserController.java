@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 /**
  * @author dpozinen
@@ -60,8 +62,14 @@ public class UserController {
 	}
 
 	@GetMapping("/login")
-	public String login(Model model) {
+	public String login() {
 		return "/user/login";
+	}
+
+	@RequestMapping("/login/fail")
+	public RedirectView loginFail(@ModelAttribute("username") String username, RedirectAttributes attributes) {
+		attributes.addFlashAttribute("username", username);
+		return new RedirectView("/user/login?error");
 	}
 
 	@RequestMapping("/forbidden")

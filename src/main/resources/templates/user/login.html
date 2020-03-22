@@ -37,13 +37,29 @@
             <form action="login" method="post" th:action="@{/user/login}">
                 <div class="md-form md-outline">
                     <i class="fas fa-user prefix align-left"></i>
-                    <input type="text" id="username" name="username" class="form-control" required>
+                    <input type="text" id="username" name="username" class="form-control" required
+                           th:value="${username}">
                     <label for="username">Username</label>
                 </div>
-                <div class="md-form md-outline">
-                    <i class="fas fa-lock prefix"></i>
-                    <input type="password" id="password" name="password" class="form-control" required minlength=3>
-                    <label for="password">Password</label>
+                <div th:unless="${param.error}">
+                    <div class="md-form md-outline">
+                        <i class="fas fa-lock prefix"></i>
+                        <input type="password" id="password1" name="password" class="form-control" required minlength=3>
+                        <label for="password1">Password</label>
+                    </div>
+                </div>
+                <div th:if="${param.error}">
+                    <div class="md-form md-outline">
+                        <i class="fas fa-lock prefix" style="color: #f44336"></i>
+                        <input type="password" id="password2" data-error="wrong" name="password"
+                               class="form-control invalid" required minlength=3>
+                        <label for="password2">Password</label>
+                        <center>
+                            <small class="form-text text-muted">
+                                Provided password is incorrect
+                            </small>
+                        </center>
+                    </div>
                 </div>
                 <center>
                     <button type="submit" class="btn btn-primary btn-md">Login</button>
