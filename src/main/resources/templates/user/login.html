@@ -19,9 +19,8 @@
     <!-- Bootstrap core CSS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.9/js/material.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.9/js/ripples.min.js"></script>
-    <script type="text/javascript" src="../../static/md/js/mdb.min.js"></script>
-
-    <link rel="stylesheet" href="../../static/md/css/mdb.min.css">
+    <script type="text/javascript" th:src="@{/md/js/mdb.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/md/css/mdb.min.css}">
 
 </head>
 
@@ -35,15 +34,15 @@
     </div>
     <div class="row justify-content-center">
         <div class="col-auto">
-            <form action="login" method="post" th:action="@{/user/do_login}">
+            <form action="login" method="post" th:action="@{/user/login}">
                 <div class="md-form md-outline">
                     <i class="fas fa-user prefix align-left"></i>
-                    <input type="text" id="username" class="form-control" required>
+                    <input type="text" id="username" name="username" class="form-control" required>
                     <label for="username">Username</label>
                 </div>
                 <div class="md-form md-outline">
                     <i class="fas fa-lock prefix"></i>
-                    <input type="password" id="password" class="form-control" required minlength=6>
+                    <input type="password" id="password" name="password" class="form-control" required minlength=3>
                     <label for="password">Password</label>
                 </div>
                 <center>
