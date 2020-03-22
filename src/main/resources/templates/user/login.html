@@ -2,30 +2,56 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-
     <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.9/js/material.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.9/js/ripples.min.js"></script>
+    <script type="text/javascript" src="../../static/md/js/mdb.min.js"></script>
+
+    <link rel="stylesheet" href="../../static/md/css/mdb.min.css">
+
 </head>
+
 <body>
 
-<div class="container-fluid bg-dark text-center">
-    <form action="login" method="post" th:action="@{/user/do_login}">
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text">@</span>
-            </div>
-            <input type="text" name="text" id="login" placeholder="Login">
+<div class="container-fluid">
+    <div class="row text-center my-5">
+        <div class="col">
+            <h1 class="h1-responsive">Login</h1>
         </div>
-        <input type="password" name="password" placeholder="password">
-        <input type="submit" value="Log In">
-    </form>
-
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-auto">
+            <form action="login" method="post" th:action="@{/user/do_login}">
+                <div class="md-form md-outline">
+                    <i class="fas fa-user prefix align-left"></i>
+                    <input type="text" id="username" class="form-control" required>
+                    <label for="username">Username</label>
+                </div>
+                <div class="md-form md-outline">
+                    <i class="fas fa-lock prefix"></i>
+                    <input type="password" id="password" class="form-control" required minlength=6>
+                    <label for="password">Password</label>
+                </div>
+                <center>
+                    <button type="submit" class="btn btn-primary btn-md waves-effect">Login</button>
+                </center>
+            </form>
+        </div>
+    </div>
 </div>
 </body>
 </html>
