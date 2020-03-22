@@ -1,4 +1,4 @@
-package dpozinen.manager.util;
+package dpozinen.manager.security;
 
 import dpozinen.manager.model.user.Role;
 import org.springframework.context.annotation.Bean;
@@ -32,12 +32,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-			.antMatchers("/user/all").hasRole(Role.ADMIN.toString())
-			.antMatchers("/user").hasAnyRole(Role.USER.toString(), Role.ADMIN.toString())
-			.antMatchers("/user/login").permitAll()
+			.antMatchers("/user/all", "/user/worker/save").hasRole(Role.ADMIN.toString())
+			.antMatchers("/user/*").hasAnyRole(Role.USER.toString(), Role.ADMIN.toString())
+			.antMatchers("/**").permitAll()
 			.anyRequest().authenticated()
 			.and()
 				.formLogin()
+				.loginPage("/user/login")
+				.permitAll()
 			.and()
 				.exceptionHandling().accessDeniedPage("/forbidden")
 			.and()

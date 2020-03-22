@@ -1,4 +1,4 @@
-package dpozinen.manager.util;
+package dpozinen.manager.security;
 
 import dpozinen.manager.model.user.Role;
 import dpozinen.manager.model.user.User;
