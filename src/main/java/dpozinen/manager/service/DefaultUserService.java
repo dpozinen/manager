@@ -5,6 +5,7 @@ import dpozinen.manager.model.user.User;
 import dpozinen.manager.model.user.Worker;
 import dpozinen.manager.repo.UserRepo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class DefaultUserService implements UserService {
 	private final UserRepo userRepo;
 	private final PasswordEncoder passwordEncoder;
 
-	public DefaultUserService(UserRepo userRepo, PasswordEncoder passwordEncoder) {
+	public DefaultUserService(UserRepo userRepo, @Lazy PasswordEncoder passwordEncoder) {
 		this.userRepo = userRepo;
 		this.passwordEncoder = passwordEncoder;
 	}
