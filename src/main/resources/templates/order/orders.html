@@ -50,29 +50,13 @@
                     <th class="th-sm">Notes</th>
                 <tbody>
                 <tr th:each="order : ${orders}" th:href="@{/order/{id} (id=${order.id})}" class="order">
-                    <td>
-                        <div class="animated fadeIn my-2" th:text="${order.id}"></div>
-                    </td>
-                    <td>
-                        <div class="animated fadeIn my-2" th:text="${order.workState}"></div>
-                    </td>
-                    <td>
-                        <div class="animated fadeIn my-2" th:text="${order.price}"></div>
-                    </td>
-                    <td>
-                        <div class="animated fadeIn my-2"
-                             th:text="${#temporals.format(order.createdDate, 'yyyy-MM-dd HH:mm')}"></div>
-                    </td>
-                    <td>
-                        <div class="animated fadeIn my-2"
-                             th:text="${#temporals.format(order.dueDate, 'yyyy-MM-dd HH:mm')}"></div>
-                    </td>
-                    <td>
-                        <div class="animated fadeIn my-2" th:text="${order.payState}"></div>
-                    </td>
-                    <td>
-                        <div class="animated fadeIn my-2" th:text="${order.notes}"></div>
-                    </td>
+                    <td><div class="animated fadeIn my-2" th:text="${order.id}"></div></td>
+                    <td><div class="animated fadeIn my-2" th:text="${order.workState}"></div></td>
+                    <td><div class="animated fadeIn my-2" th:text="${order.price}"></div></td>
+                    <td><div class="animated fadeIn my-2" th:text="${#temporals.format(order.createdDate, 'yyyy-MM-dd HH:mm')}"></div></td>
+                    <td><div class="animated fadeIn my-2" th:text="${#temporals.format(order.dueDate, 'yyyy-MM-dd HH:mm')}"></div></td>
+                    <td><div class="animated fadeIn my-2" th:text="${order.payState}"></div></td>
+                    <td><div class="animated fadeIn my-2" th:text="${order.notes}"></div></td>
                 </tr>
                 </tbody>
             </table>
@@ -109,7 +93,7 @@ $(document).click(function() {
 });
 
 $('#orders').SetEditable({
-  columnsEd:"1,3"
+  columnsEd:"1,3,5,6"
 });
 
 
