@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>Orders</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
@@ -23,9 +26,9 @@
     <!-- Bootstrap core CSS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.9/js/material.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.9/js/ripples.min.js"></script>
-    <script type="text/javascript" th:src="@{/bootstable.js}"></script>
     <script type="text/javascript" th:src="@{/md/js/mdb.min.js}"></script>
     <link rel="stylesheet" th:href="@{/md/css/mdb.min.css}">
+    <script type="text/javascript" th:src="@{/bootstable.js}"></script>
 </head>
 <body>
 <div class="container justify-content-center">
@@ -50,13 +53,13 @@
                     <th class="th-sm">Notes</th>
                 <tbody>
                 <tr th:each="order : ${orders}" th:href="@{/order/{id} (id=${order.id})}" class="order">
-                    <td><div class="animated fadeIn my-2" th:text="${order.id}"></div></td>
-                    <td><div class="animated fadeIn my-2" th:text="${order.workState}"></div></td>
-                    <td><div class="animated fadeIn my-2" th:text="${order.price}"></div></td>
-                    <td><div class="animated fadeIn my-2" th:text="${#temporals.format(order.createdDate, 'yyyy-MM-dd HH:mm')}"></div></td>
-                    <td><div class="animated fadeIn my-2" th:text="${#temporals.format(order.dueDate, 'yyyy-MM-dd HH:mm')}"></div></td>
-                    <td><div class="animated fadeIn my-2" th:text="${order.payState}"></div></td>
-                    <td><div class="animated fadeIn my-2" th:text="${order.notes}"></div></td>
+                    <td><div id="id" class="animated fadeIn" th:text="${order.id}"></div></td>
+                    <td><div id="workState" class="animated fadeIn" th:text="${order.workState}"></div></td>
+                    <td><div id="price" class="animated fadeIn" th:text="${order.price}"></div></td>
+                    <td><div id="createdDate" class="animated fadeIn" th:text="${#temporals.format(order.createdDate, 'yyyy-MM-dd HH:mm')}"></div></td>
+                    <td><div id="dueDate" class="animated fadeIn" th:text="${#temporals.format(order.dueDate, 'yyyy-MM-dd HH:mm')}"></div></td>
+                    <td><div id="payState" class="animated fadeIn" th:text="${order.payState}"></div></td>
+                    <td><div id="notes" class="animated fadeIn" th:text="${order.notes}"></div></td>
                 </tr>
                 </tbody>
             </table>
