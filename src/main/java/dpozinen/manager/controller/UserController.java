@@ -2,7 +2,7 @@ package dpozinen.manager.controller;
 
 import dpozinen.manager.model.user.Client;
 import dpozinen.manager.model.user.Worker;
-import dpozinen.manager.service.UserService;
+import dpozinen.manager.service.user.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;

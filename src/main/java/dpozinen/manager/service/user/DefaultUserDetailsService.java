@@ -1,4 +1,4 @@
-package dpozinen.manager.service;
+package dpozinen.manager.service.user;
 
 import dpozinen.manager.model.user.User;
 import dpozinen.manager.security.DefaultUserDetails;
