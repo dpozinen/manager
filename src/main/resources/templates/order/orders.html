@@ -55,11 +55,11 @@
                 <tbody>
                 <tr th:each="order : ${orders}" th:href="@{/order/{id} (id=${order.id})}" class="order">
                     <td th:text="${order.id}"></td>
-                    <td th:text="${order.state}"></td>
+                    <td th:text="${order.workState}"></td>
                     <td th:text="${order.price}"></td>
-                    <td th:text="${order.createdDate}"></td>
-                    <td th:text="${order.dueDate}"></td>
-                    <td th:text="${order.isPayed}"></td>
+                    <td th:text="${#temporals.format(order.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
+                    <td th:text="${#temporals.format(order.dueDate, 'yyyy-MM-dd HH:mm')}"></td>
+                    <td th:text="${order.payState}"></td>
                     <td th:text="${order.notes}"></td>
                 </tr>
                 </tbody>
