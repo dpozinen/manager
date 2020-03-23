@@ -27,12 +27,14 @@ public class UserController {
 	public String getUser(@PathVariable Long id, Model model) {
 		var user = service.getById(id);
 
-		if (user instanceof Worker) {
-			model.addAttribute("worker", user);
+		if (user.isWorker()) {
+			model.addAttribute("worker", user.toWorker());
 			return "/user/worker";
-		} else if (user instanceof Client) {
-			model.addAttribute("client", user);
+		} else if (user.isClient()) {
+			model.addAttribute("client", user.toClient());
 			return "/user/client";
+		} else if (user.isEmpty()) {
+			return "/user/notFound"; // TODO
 		}
 		return "/error";
 	}

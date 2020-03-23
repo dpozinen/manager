@@ -65,7 +65,7 @@ public class DefaultUserService implements UserService {
 	public User getById(Long id) {
 		return userRepo.findById(id).orElseGet(() -> {
 			log.warn("Could not find user by id: " + id);
-			return null;
+			return User.EMPTY;
 		});
 	}
 
@@ -73,7 +73,7 @@ public class DefaultUserService implements UserService {
 	public User getByUsername(String username) {
 		return userRepo.findByUsername(username).orElseGet(() -> {
 			log.warn("Could not find user by username: " + username);
-			return null;
+			return User.EMPTY;
 		});
 	}
 
@@ -81,7 +81,7 @@ public class DefaultUserService implements UserService {
 	public User getByEmail(String email) {
 		return userRepo.findByUsername(email).orElseGet(() -> {
 			log.warn("Could not find user by email: " + email);
-			return null;
+			return User.EMPTY;
 		});
 	}
 

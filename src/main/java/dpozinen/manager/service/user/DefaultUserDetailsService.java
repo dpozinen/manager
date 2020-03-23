@@ -22,7 +22,7 @@ public class DefaultUserDetailsService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = service.getByUsername(username);
-		if (user == null) throw new UsernameNotFoundException(username);
+		if (user.isEmpty()) throw new UsernameNotFoundException(username);
 		return new DefaultUserDetails(user);
 	}
 }

@@ -14,6 +14,8 @@ import java.util.Set;
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract @Data class User {
 
+	public static final User EMPTY = new EmptyUser();
+
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
@@ -39,6 +41,10 @@ public abstract @Data class User {
 		return this instanceof Worker;
 	}
 
+	public boolean isEmpty() {
+		return this instanceof EmptyUser;
+	}
+
 	public Worker toWorker() {
 		return (Worker) this;
 	}
@@ -46,4 +52,57 @@ public abstract @Data class User {
 	public Client toClient() {
 		return (Client) this;
 	}
+
+	private static final class EmptyUser extends User {
+		EmptyUser() {
+			setId(0L).setName("").setLastName("").setFatherName("")
+			.setPhone("").setEmail("").setUsername("").setPassword("");
+		}
+
+		@Override
+		public User setId(Long id) {
+			throw new UnsupportedOperationException("Can't edit this");
+		}
+
+		@Override
+		public User setName(String name) {
+			throw new UnsupportedOperationException("Can't edit this");
+		}
+
+		@Override
+		public User setLastName(String lastName) {
+			throw new UnsupportedOperationException("Can't edit this");
+		}
+
+		@Override
+		public User setFatherName(String fatherName) {
+			throw new UnsupportedOperationException("Can't edit this");
+		}
+
+		@Override
+		public User setPhone(String phone) {
+			throw new UnsupportedOperationException("Can't edit this");
+		}
+
+		@Override
+		public User setEmail(String email) {
+			throw new UnsupportedOperationException("Can't edit this");
+		}
+
+		@Override
+		public User setPassword(String password) {
+			throw new UnsupportedOperationException("Can't edit this");
+		}
+
+		@Override
+		public User setUsername(String username) {
+			throw new UnsupportedOperationException("Can't edit this");
+		}
+
+		@Override
+		public User setOrders(Set<Order> orders) {
+			throw new UnsupportedOperationException("Can't edit this");
+		}
+	}
+
 }
