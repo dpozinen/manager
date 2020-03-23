@@ -23,13 +23,9 @@
     <!-- Bootstrap core CSS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.9/js/material.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.9/js/ripples.min.js"></script>
+    <script type="text/javascript" th:src="@{/bootstable.js}"></script>
     <script type="text/javascript" th:src="@{/md/js/mdb.min.js}"></script>
     <link rel="stylesheet" th:href="@{/md/css/mdb.min.css}">
-    <style>
-        tr.user {
-            cursor: pointer;
-        }
-    </style>
 </head>
 <body>
 <div class="container justify-content-center">
@@ -42,7 +38,7 @@
     </div>
     <div class="col">
         <div class="wrapper-editor">
-            <table id="users" class="table" width="100%">
+            <table id="orders" class="table" width="100%">
                 <thead>
                 <tr>
                     <th class="th-sm">Id</th>
@@ -54,13 +50,29 @@
                     <th class="th-sm">Notes</th>
                 <tbody>
                 <tr th:each="order : ${orders}" th:href="@{/order/{id} (id=${order.id})}" class="order">
-                    <td th:text="${order.id}"></td>
-                    <td th:text="${order.workState}"></td>
-                    <td th:text="${order.price}"></td>
-                    <td th:text="${#temporals.format(order.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
-                    <td th:text="${#temporals.format(order.dueDate, 'yyyy-MM-dd HH:mm')}"></td>
-                    <td th:text="${order.payState}"></td>
-                    <td th:text="${order.notes}"></td>
+                    <td>
+                        <div class="animated fadeIn my-2" th:text="${order.id}"></div>
+                    </td>
+                    <td>
+                        <div class="animated fadeIn my-2" th:text="${order.workState}"></div>
+                    </td>
+                    <td>
+                        <div class="animated fadeIn my-2" th:text="${order.price}"></div>
+                    </td>
+                    <td>
+                        <div class="animated fadeIn my-2"
+                             th:text="${#temporals.format(order.createdDate, 'yyyy-MM-dd HH:mm')}"></div>
+                    </td>
+                    <td>
+                        <div class="animated fadeIn my-2"
+                             th:text="${#temporals.format(order.dueDate, 'yyyy-MM-dd HH:mm')}"></div>
+                    </td>
+                    <td>
+                        <div class="animated fadeIn my-2" th:text="${order.payState}"></div>
+                    </td>
+                    <td>
+                        <div class="animated fadeIn my-2" th:text="${order.notes}"></div>
+                    </td>
                 </tr>
                 </tbody>
                 <tfoot>
@@ -79,17 +91,13 @@
     </div>
 </div>
 <script>
-$(document).ready(function() {
-    $('#orders tr').click(function() {
-        var href = $(this).attr("href");
-        if(href) {
-            window.location = href;
-        }
-    });
-});
 
 $(document).ready(function () {
-  $('#orders').DataTable();
+  $('#orders').DataTable({
+    "columnDefs": [
+      { "orderable": false, "targets": 7 }
+    ]
+  });
   $('#orders_wrapper').find('label').each(function () {
     $(this).parent().append($(this).children());
   });
@@ -101,11 +109,20 @@ $(document).ready(function () {
   $('#orders_wrapper .dataTables_length').addClass('d-flex flex-row');
   $('#orders_wrapper .dataTables_filter').addClass('md-form');
   $('#orders_wrapper select').removeClass(
-  'custom-select custom-select-sm form-control form-control-sm');
+    'custom-select custom-select-sm form-control form-control-sm');
   $('#orders_wrapper select').addClass('mdb-select');
   $('#orders_wrapper .mdb-select').materialSelect();
   $('#orders_wrapper .dataTables_filter').find('label').remove();
 });
+
+$(document).click(function() {
+  $('.order').animate({height: '50px'});
+});
+
+$('#orders').SetEditable({
+  columnsEd:"1,3"
+});
+
 
 </script>
 </body>
