@@ -1,5 +1,7 @@
 package dpozinen.manager.service.order;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import dpozinen.manager.model.order.Order;
 import dpozinen.manager.model.user.User;
 import dpozinen.manager.repo.OrderRepo;
@@ -8,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.StreamSupport;
 
@@ -55,6 +58,24 @@ public class DefaultOrderService implements OrderService {
 	public Order save(Order order) {
 		log.debug("Saved order with id " + order.getId());
 		return orderRepo.save(order);
+	}
+
+	@Override
+	public Order edit(Map<String, Object> order) {
+		Gson gson = new Gson();
+		try {
+			Order o = gson.fromJson(gson.toJson(order), Order.class);
+			if (o != null) {
+				Order byId = getById(o.getId());
+				byId.setPayState(o.getPayState()).setWorkState(o.getWorkState())
+					.setNotes(o.getNotes()).setPrice(o.getPrice());
+				save(byId);
+			}
+			return o;
+		} catch (JsonSyntaxException e) {
+			log.warn("Could not process edit of order:" + order);
+			return null;
+		}
 	}
 
 	@Override

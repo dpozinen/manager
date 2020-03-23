@@ -3,6 +3,7 @@ package dpozinen.manager.service.order;
 import dpozinen.manager.model.order.Order;
 import dpozinen.manager.model.user.User;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -18,4 +19,5 @@ public interface OrderService {
 
 	Order save(Order order);
 	Order edit(Order order);
+	Order edit(Map<String, Object> order);
 }
