@@ -39,8 +39,12 @@ Bootstable
                     var id = $row.find('div').each(function() {
                         var id = $(this).attr('id');
                         var value = $(this).text();
-                        if (id != undefined) {
-                            order[id] = value;
+                        if (id != undefined && id != 'dueDate' && id != 'createdDate') {
+                            if (id.indexOf('State') >= 0) {
+                                order[id] = value.replace(' ', '_');
+                            } else {
+                                order[id] = value;
+                            }
                         }
                     });
 
