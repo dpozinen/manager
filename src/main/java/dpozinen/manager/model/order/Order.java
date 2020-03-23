@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,10 +20,16 @@ public @Data class Order {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Enumerated(value = EnumType.STRING)
-	private OrderState state;
 	private BigDecimal price;
-	private Boolean isPayed;
+	private LocalDateTime createdDate;
+	private LocalDateTime dueDate;
+	@Lob
+	private String notes;
+
+	@Enumerated(value = EnumType.STRING)
+	private OrderState workState;
+	@Enumerated(value = EnumType.STRING)
+	private OrderState payState;
 
 	@ManyToMany
 	private Set<User> users = new HashSet<>();
