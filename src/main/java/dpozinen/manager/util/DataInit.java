@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * @author dpozinen
@@ -32,16 +33,21 @@ public class DataInit {
 
 	@EventListener
 	public void populateOrdersAndUsers(ContextRefreshedEvent event) {
-		Worker workerA = (Worker) new Worker().setSalary(BigDecimal.ZERO).setRole(Role.USER).setName("Kate").setLastName("Park")
-											  .setPassword(encoder.encode("123")).setUsername("immkath")
-											  .setFatherName("Andrii").setPhone("+38(066) 207 0746");
+		Worker workerA = (Worker) new Worker().setSalary(BigDecimal.ZERO).setRole(Role.USER).setName("Kate")
+											  .setLastName("Park").setPassword(encoder.encode("123"))
+											  .setUsername("immkath").setFatherName("Andrii")
+											  .setPhone("+38(066) 207 0746");
 
-		Worker workerB = (Worker) new Worker().setSalary(BigDecimal.TEN).setRole(Role.ADMIN).setName("Dar").setLastName("Poz")
-											  .setPassword(encoder.encode("123")).setUsername("dpozinen")
-											  .setFatherName("Andrii").setPhone("+38(050) 385 0660");
+		Worker workerB = (Worker) new Worker().setSalary(BigDecimal.TEN).setRole(Role.ADMIN).setName("Dar")
+											  .setLastName("Poz").setPassword(encoder.encode("123"))
+											  .setUsername("dpozinen").setFatherName("Andrii")
+											  .setPhone("+38(050) 385 0660");
 
-		Order orderA = new Order().setIsPayed(false).setPrice(BigDecimal.valueOf(12)).setState(OrderState.QUEUED);
-		Order orderB = new Order().setIsPayed(true).setPrice(BigDecimal.valueOf(12)).setState(OrderState.DELAYED);
+		Order orderA = new Order().setPayState(OrderState.NOT_PAYED).setPrice(BigDecimal.valueOf(12))
+								  .setWorkState(OrderState.QUEUED).setCreatedDate(LocalDateTime.now());
+		Order orderB = new Order().setPayState(OrderState.PAYED).setPrice(BigDecimal.valueOf(12))
+								  .setWorkState(OrderState.DELAYED).setCreatedDate(LocalDateTime.now());
+
 		workerA.getOrders().add(orderA);
 		workerA.getOrders().add(orderB);
 
