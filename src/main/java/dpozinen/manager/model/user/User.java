@@ -55,8 +55,9 @@ public abstract @Data class User {
 
 	private static final class EmptyUser extends User {
 		EmptyUser() {
-			setId(0L).setName("").setLastName("").setFatherName("")
-			.setPhone("").setEmail("").setUsername("").setPassword("");
+			super.setId(0L); super.setName(""); super.setLastName("");
+			super.setFatherName(""); super.setPhone(""); super.setEmail("");
+			super.setPassword(""); super.setUsername("");
 		}
 
 		@Override
