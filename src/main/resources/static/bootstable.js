@@ -29,7 +29,28 @@ Bootstable
     var defaults = {
         columnsEd: null,         //Index to editable columns. If null all td editables. Ex.: "1,2,3,4,5"
         $addButton: null,        //Jquery object of "Add" button
-        onEdit: function() {},   //Called after edition
+        onEdit: function ($row) {
+                    var xhr = new XMLHttpRequest();
+                    var url = "/order/edit";
+                    var token = $("meta[name='_csrf']").attr("content");
+                    var header = $("meta[name='_csrf_header']").attr("content");
+
+                    var order = {};
+                    var id = $row.find('div').each(function() {
+                        var id = $(this).attr('id');
+                        var value = $(this).text();
+                        if (id != undefined) {
+                            order[id] = value;
+                        }
+                    });
+
+                    xhr.open("POST", url, true);
+                    xhr.setRequestHeader("Content-Type", "application/json");
+                    xhr.setRequestHeader(header, token);
+
+                    var data = JSON.stringify(order);
+                    xhr.send(data);
+                  },   //Called after edition
 		onBeforeDelete: function() {}, //Called before deletion
         onDelete: function() {}, //Called after deletion
         onAdd: function() {},     //Called when added a new row
@@ -114,7 +135,8 @@ function rowAcep(but) {
 
     IterarCamposEdit($cols, function($td) {
       var cont = $td.find('input').val();
-      var div = '<div class="animated fadeIn my-2">' + cont + '</div>';
+      var id = $td.find('div').attr('id');
+      var div = '<div class="animated fadeIn my-2" id="'+id+'">' + cont + '</div>';
       $td.html(div);
     });
     FijModoNormal(but);
@@ -127,9 +149,10 @@ function rowCancel(but) {
     if (!ModoEdicion($row)) return;
 
     IterarCamposEdit($cols, function($td) {
-        var cont = $td.find('input').val();
-        var div = '<div class="animated fadeIn my-2">' + cont + '</div>';
-        $td.html(div);
+      var cont = $td.find('input').val();
+      var id = $td.find('div').attr('id');
+      var div = '<div class="animated fadeIn my-2" id="'+id+'">' + cont + '</div>';
+      $td.html(div);
     });
     FijModoNormal(but);
 }
@@ -140,7 +163,8 @@ function rowEdit(but) {
 
     IterarCamposEdit($cols, function($td) {
         var cont = $td.text().trim();
-        var input = '<div class="md-form my-0"> <input class="form-control animated fadeIn form-control-sm"  value="' + cont + '"> </div>';
+        var id = $td.find('div').attr('id');
+        var input = '<div class="md-form my-0" id="'+id+'"> <input class="form-control animated fadeIn form-control-sm"  value="' + cont + '"> </div>';
         $td.html(input);
     });
     FijModoEdit(but);
