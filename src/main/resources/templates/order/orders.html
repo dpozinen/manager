@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Orders</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <!-- DataTables CSS -->
+    <link th:href="@{/md/css/addons/datatables.min.css}" rel="stylesheet">
+    <!-- DataTables JS -->
+    <script th:src="@{/md/js/addons/datatables.min.js}" type="text/javascript"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.9/js/material.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.9/js/ripples.min.js"></script>
+    <script type="text/javascript" th:src="@{/md/js/mdb.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/md/css/mdb.min.css}">
+    <style>
+        tr.user {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container justify-content-center">
+    <div class="row my-5 text-center">
+        <div class="col">
+            <h1 class="h1-responsive">
+                All Orders
+            </h1>
+        </div>
+    </div>
+    <div class="col">
+        <div class="wrapper-editor">
+            <table id="users" class="table" width="100%">
+                <thead>
+                <tr>
+                    <th class="th-sm">Id</th>
+                    <th class="th-sm">Status</th>
+                    <th class="th-sm">Price</th>
+                    <th class="th-sm">Created</th>
+                    <th class="th-sm">Due</th>
+                    <th class="th-sm">Payed</th>
+                    <th class="th-sm">Notes</th>
+                <tbody>
+                <tr th:each="order : ${orders}" th:href="@{/order/{id} (id=${order.id})}" class="order">
+                    <td th:text="${order.id}"></td>
+                    <td th:text="${order.state}"></td>
+                    <td th:text="${order.price}"></td>
+                    <td th:text="${order.createdDate}"></td>
+                    <td th:text="${order.dueDate}"></td>
+                    <td th:text="${order.isPayed}"></td>
+                    <td th:text="${order.notes}"></td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th>Id</th>
+                    <th>Status</th>
+                    <th>Price</th>
+                    <th>Created</th>
+                    <th>Due</th>
+                    <th>Payed</th>
+                    <th>Notes</th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+$(document).ready(function() {
+    $('#orders tr').click(function() {
+        var href = $(this).attr("href");
+        if(href) {
+            window.location = href;
+        }
+    });
+});
+
+$(document).ready(function () {
+  $('#orders').DataTable();
+  $('#orders_wrapper').find('label').each(function () {
+    $(this).parent().append($(this).children());
+  });
+  $('#orders_wrapper .dataTables_filter').find('input').each(function () {
+    const $this = $(this);
+    $this.attr("placeholder", "Search");
+    $this.removeClass('form-control-sm');
+  });
+  $('#orders_wrapper .dataTables_length').addClass('d-flex flex-row');
+  $('#orders_wrapper .dataTables_filter').addClass('md-form');
+  $('#orders_wrapper select').removeClass(
+  'custom-select custom-select-sm form-control form-control-sm');
+  $('#orders_wrapper select').addClass('mdb-select');
+  $('#orders_wrapper .mdb-select').materialSelect();
+  $('#orders_wrapper .dataTables_filter').find('label').remove();
+});
+
+</script>
+</body>
+</html>
