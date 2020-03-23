@@ -1,35 +1,67 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Table V02</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <!-- DataTables CSS -->
+    <link th:href="@{/md/css/addons/datatables.min.css}" rel="stylesheet">
+    <!-- DataTables JS -->
+    <script th:src="@{/md/js/addons/datatables.min.js}" type="text/javascript"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.9/js/material.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.9/js/ripples.min.js"></script>
+    <script type="text/javascript" th:src="@{/md/js/mdb.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/md/css/mdb.min.css}">
+    <style>
+        tr.user {
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-
-<div class="limiter">
-    <table class="table" id="users">
-        <tbody>
-        <tr class="row header">
-            <th class="cell">Id</th>
-            <th class="cell">Name</th>
-            <th class="cell">LastName</th>
-            <th class="cell">Phone</th>
-        </tr>
-
-        <tr class="row" th:each="user : ${users}" th:href="@{/user/{id} (id=${user.id})}">
-            <td class="cell" data-title="Id" th:text="${user.id}"></td>
-            <td class="cell" data-title="Name" th:text="${user.name}"></td>
-            <td class="cell" data-title="LastName" th:text="${user.lastName}"></td>
-            <td class="cell" data-title="Phone" th:text="${user.phone}"></td>
-        </tr>
-        </tbody>
-
-    </table>
+<div class="container justify-content-center">
+    <div class="col">
+        <div class="wrapper-editor">
+            <table id="users" class="table table-bordered" width="100%">
+                <thead>
+                <tr>
+                    <th class="th-sm">Name</th>
+                    <th class="th-sm">Last Name</th>
+                    <th class="th-sm">Phone</th>
+                    <th class="th-sm">Email</th>
+                <tbody>
+                <tr th:each="user : ${users}" th:href="@{/user/{id} (id=${user.id})}" class="user">
+                    <td th:text="${user.name}"></td>
+                    <td th:text="${user.lastName}"></td>
+                    <td th:text="${user.phone}"></td>
+                    <td th:text="${user.email}"></td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th>Name</th>
+                    <th>Last Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
 </div>
-
-<script th:src="@{/table/vendor/jquery/jquery-3.2.1.min.js}"></script>
-
 <script>
 $(document).ready(function() {
     $('#users tr').click(function() {
@@ -38,6 +70,25 @@ $(document).ready(function() {
             window.location = href;
         }
     });
+});
+
+$(document).ready(function () {
+  $('#users').DataTable();
+  $('#users_wrapper').find('label').each(function () {
+    $(this).parent().append($(this).children());
+  });
+  $('#users_wrapper .dataTables_filter').find('input').each(function () {
+    const $this = $(this);
+    $this.attr("placeholder", "Search");
+    $this.removeClass('form-control-sm');
+  });
+  $('#users_wrapper .dataTables_length').addClass('d-flex flex-row');
+  $('#users_wrapper .dataTables_filter').addClass('md-form');
+  $('#users_wrapper select').removeClass(
+  'custom-select custom-select-sm form-control form-control-sm');
+  $('#users_wrapper select').addClass('mdb-select');
+  $('#users_wrapper .mdb-select').materialSelect();
+  $('#users_wrapper .dataTables_filter').find('label').remove();
 });
 
 </script>
