@@ -2,7 +2,6 @@ package dpozinen.manager.model.order;
 
 import dpozinen.manager.model.user.User;
 import lombok.Data;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -13,7 +12,6 @@ import java.util.Set;
 /**
  * @author dpozinen
  */
-@Component
 @Entity
 public @Data class Order {
 
