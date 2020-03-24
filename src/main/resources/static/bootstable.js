@@ -83,13 +83,6 @@ Bootstable
     if (params.columnsEd != null) {
         colsEdi = params.columnsEd.split(',');
     }
-
-    if (params.$addColButton != null) {
-
-        params.$addColButton.click(function() {
-            rowAddNewCol($tabedi.attr("id"));
-        });
-    }
   };
 
 function IterarCamposEdit($cols, tarea) {
