@@ -27,7 +27,7 @@ public abstract @Data class User {
 	private String password;
 	private String username;
 
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "user_order",
 			joinColumns = @JoinColumn(name = "user_id"),
 			inverseJoinColumns = @JoinColumn(name = "order_id"))
