@@ -34,9 +34,9 @@ public class OrderController {
 
 	@PostMapping("/edit")
 	public ResponseEntity<Order> edit(@RequestBody Map<String, Object> order) {
-		Order edited = service.edit(order);
-		if (edited == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		else return new ResponseEntity<>(HttpStatus.OK);
+		boolean successful = service.edit(order);
+		if (successful) return new ResponseEntity<>(HttpStatus.OK);
+		else return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 	}
 
 }

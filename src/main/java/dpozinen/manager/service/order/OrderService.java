@@ -4,6 +4,7 @@ import dpozinen.manager.model.order.Order;
 import dpozinen.manager.model.user.User;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -15,9 +16,9 @@ public interface OrderService {
 	Set<Order> ordersOf(User user);
 	Set<Order> ordersOfUserById(Long id);
 
-	Order getById(Long id);
+	Optional<Order> getById(Long id);
 
-	Order save(Order order);
-	Order edit(Order order);
-	Order edit(Map<String, Object> order);
+	Optional<Order> save(Order order);
+	Optional<Order> edit(Order order);
+	boolean edit(Map<String, Object> order);
 }

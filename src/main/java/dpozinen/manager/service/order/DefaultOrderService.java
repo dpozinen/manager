@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.StreamSupport;
 
@@ -47,39 +48,36 @@ public class DefaultOrderService implements OrderService {
 	}
 
 	@Override
-	public Order getById(Long id) {
-		return orderRepo.findById(id).orElseGet(() -> {
-			log.warn("Could not find order by id: " + id);
-			return null;
-		});
+	public Optional<Order> getById(Long id) {
+		return orderRepo.findById(id);
 	}
 
 	@Override
-	public Order save(Order order) {
+	public Optional<Order> save(Order order) {
 		log.debug("Saved order with id " + order.getId());
-		return orderRepo.save(order);
+		return Optional.of(orderRepo.save(order));
 	}
 
 	@Override
-	public Order edit(Map<String, Object> order) {
+	public boolean edit(Map<String, Object> order) {
 		Gson gson = new Gson();
 		try {
-			Order o = gson.fromJson(gson.toJson(order), Order.class);
-			if (o != null) {
-				Order byId = getById(o.getId());
-				byId.setPayState(o.getPayState()).setWorkState(o.getWorkState())
-					.setNotes(o.getNotes()).setPrice(o.getPrice());
-				save(byId);
-			}
-			return o;
+			Order parsed = gson.fromJson(gson.toJson(order), Order.class);
+			Optional.ofNullable(parsed)
+					.flatMap(o -> getById(o.getId())
+									.map(found -> found.setPayState(o.getPayState())
+													   .setWorkState(o.getWorkState())
+													   .setNotes(o.getNotes()).setPrice(o.getPrice())
+					)).ifPresent(this::save);
+			return true;
 		} catch (JsonSyntaxException e) {
 			log.warn("Could not process edit of order:" + order);
-			return null;
+			return false;
 		}
 	}
 
 	@Override
-	public Order edit(Order order) {
+	public Optional<Order> edit(Order order) {
 		throw new UnsupportedOperationException("Edits not implemented yet");
 	}
 }
