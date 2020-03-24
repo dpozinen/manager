@@ -48,6 +48,13 @@ Bootstable
                         }
                     });
 
+                    xhr.onload = function () {
+                        if (this.status != 200) {
+                            alert('Could not process that request, please try again');
+                            location.reload();
+                        }
+                    };
+
                     xhr.open("POST", url, true);
                     xhr.setRequestHeader("Content-Type", "application/json");
                     xhr.setRequestHeader(header, token);
