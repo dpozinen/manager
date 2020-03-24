@@ -145,7 +145,7 @@ function acceptEdit(but) {
 
         var cont;
         if (id == 'workState') {
-            cont = $('option[selected]').text().trim();
+            cont = $td.find('select').val().replace('_', ' ');
         } else {
             cont = $td.find('input').val();
         }
@@ -165,8 +165,15 @@ function cancelEdit(but) {
     if (!isEditMode($row)) return;
 
     iterateEditableCols($cols, function ($td) {
-        var cont = $td.find('input').val();
         var id = $td.find('div').attr('id');
+
+        var cont;
+        if (id == 'workState') {
+            cont = $('option[selected]').val();
+        } else {
+            cont = $td.find('input').attr('value')
+        }
+
         var div = '<div class="animated fadeIn my-2" id="' + id + '">' + cont + '</div>';
         $td.html(div);
     });
@@ -242,12 +249,12 @@ function makeWorkStateCell($td) {
                 <option value="DELAYED">DELAYED</option>
                 <option value="QUEUED">QUEUED</option>
                 <option value="DONE">DONE</option>
-                <option value="IN_PROGRESS">IN PROGRESS</option>
+                <option value="IN PROGRESS">IN PROGRESS</option>
             </select>
         </div>
     `;
     var text = $td.find('div').text().trim();
     $td.html(select);
 
-    $('option[value='+text+']').attr('selected', 'selected');
+    $('option[value="'+text+'"]').attr('selected', 'selected');
 }
