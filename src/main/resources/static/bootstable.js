@@ -27,7 +27,7 @@ var colEdicHtml = '<td name="buttons">' + newColHtml + '</td>';
 
 $.fn.SetEditable = function (options) {
     var defaults = {
-        columnsEd: null,         //Index to editable columns. If null all td editables. Ex.: "1,2,3,4,5"
+        editableCols: "1,2,5,6",         //Index to editable columns. If null all td editables. Ex.: "1,2,3,4,5"
         $addButton: null,        //Jquery object of "Add" button
         onEdit: function ($row) {
             var xhr = new XMLHttpRequest();
@@ -79,8 +79,8 @@ $.fn.SetEditable = function (options) {
         });
     }
 
-    if (params.columnsEd != null) {
-        colsEdi = params.columnsEd.split(',');
+    if (params.editableCols != null) {
+        colsEdi = params.editableCols.split(',');
     }
 };
 
