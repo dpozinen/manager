@@ -141,8 +141,15 @@ function acceptEdit(but) {
     if (!isEditMode($row)) return;
 
     iterateEditableCols($cols, function ($td) {
-        var cont = $td.find('input').val();
         var id = $td.find('div').attr('id');
+
+        var cont;
+        if (id == 'workState') {
+            cont = $('option[selected]').text().trim();
+        } else {
+            cont = $td.find('input').val();
+        }
+
         var div = '<div class="animated fadeIn my-2" id="' + id + '">' + cont + '</div>';
         $td.html(div);
     });
@@ -174,8 +181,13 @@ function startEdit(but) {
     iterateEditableCols($cols, function ($td) {
         var cont = $td.text().trim();
         var id = $td.find('div').attr('id');
-        var input = '<div class="md-form my-0" id="' + id + '"> <input class="form-control animated fadeIn form-control-sm"  value="' + cont + '"> </div>';
-        $td.html(input);
+
+        if (id == 'workState') {
+            makeWorkStateCell($td);
+        } else {
+            var input = '<div class="md-form my-0" id="' + id + '"> <input class="form-control animated fadeIn form-control-sm"  value="' + cont + '"> </div>';
+            $td.html(input);
+        }
     });
     toEditMode(but);
 }
@@ -186,7 +198,6 @@ function removeRow(but) {
     $row.remove();
     params.onDelete();
 }
-
 
 function rowAddNew(tabId) {
     var $tab_en_edic = $("#" + tabId);
@@ -223,3 +234,24 @@ function rowAddNew(tabId) {
     params.onAdd();
 }
 
+function makeWorkStateCell($td) {
+    var select = 
+    `
+        <div class="md-form my-0 animated fadeIn" id="workState">
+            <select class="browser-default custom-select custom-select-sm">
+                <option value="DELAYED">DELAYED</option>
+                <option value="QUEUED">QUEUED</option>
+                <option value="DONE">DONE</option>
+                <option value="IN_PROGRESS">IN PROGRESS</option>
+            </select>
+        </div>
+    `;
+    var text = $td.find('div').text();
+    $td.html(select);
+
+    $td.find('option').each(function() {
+        if ($(this).text().indexOf(text) >= 0) {
+            $(this).attr('selected', 'selected');
+        }
+    });
+}
