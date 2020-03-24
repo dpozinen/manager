@@ -44,8 +44,10 @@ public class DataInit {
 											  .setPhone("+38(050) 385 0660");
 
 		Order orderA = new Order().setPayState(OrderState.NOT_PAYED).setPrice(BigDecimal.valueOf(12))
+								  .setDueDate(LocalDateTime.of(1999, 2, 3, 12, 22))
 								  .setWorkState(OrderState.QUEUED).setCreatedDate(LocalDateTime.now());
 		Order orderB = new Order().setPayState(OrderState.PAYED).setPrice(BigDecimal.valueOf(12))
+								  .setDueDate(LocalDateTime.of(1999, 2, 3, 12, 22))
 								  .setWorkState(OrderState.DELAYED).setCreatedDate(LocalDateTime.now());
 
 		workerA.getOrders().add(orderA);
