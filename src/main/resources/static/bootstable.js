@@ -10,16 +10,16 @@ Bootstable
   var params = null;
   var colsEdi = null;
   var newColHtml = '<div class="btn-group pull-right">'+
-'<button id="bEdit" type="button" class="btn btn-sm btn-md btn-primary" onclick="rowEdit(this);">' +
+'<button id="bEdit" type="button" class="btn btn-sm btn-md btn-primary" onclick="startEdit(this);">' +
 '<i class="fas fa-edit"></i>'+
 '</button>'+
-'<button id="bElim" type="button" class="btn btn-sm btn-md btn-danger" onclick="rowElim(this);">' +
+'<button id="bElim" type="button" class="btn btn-sm btn-md btn-danger" onclick="removeRow(this);">' +
 '<i class="fas fa-trash"></i>'+
 '</button>'+
-'<button id="bAcep" type="button" class="btn btn-sm btn-md btn-success" style="display:none;" onclick="rowAcep(this);">' +
+'<button id="bAcep" type="button" class="btn btn-sm btn-md btn-success" style="display:none;" onclick="acceptEdit(this);">' +
 '<i class="fas fa-check-circle"></i>'+
 '</button>'+
-'<button id="bCanc" type="button" class="btn btn-sm btn-md btn-warning" style="display:none;" onclick="rowCancel(this);">' +
+'<button id="bCanc" type="button" class="btn btn-sm btn-md btn-warning" style="display:none;" onclick="cancelEdit(this);">' +
 '<i class="fas fa-window-close"></i>'+
 '</button>'+
 '</div>';
@@ -74,7 +74,6 @@ Bootstable
 	var $tabedi = this;
 
     if (params.$addButton != null) {
-
         params.$addButton.click(function() {
             rowAddNew($tabedi.attr("id"));
         });
@@ -85,7 +84,7 @@ Bootstable
     }
   };
 
-function IterarCamposEdit($cols, tarea) {
+function iterateEditableCols($cols, tarea) {
 
     var n = 0;
     $cols.each(function() {
@@ -108,7 +107,8 @@ function IterarCamposEdit($cols, tarea) {
         }
     }
 }
-function FijModoNormal(but) {
+
+function toNormalMode(but) {
     $(but).parent().find('#bAcep').hide();
     $(but).parent().find('#bCanc').hide();
     $(but).parent().find('#bEdit').show();
@@ -116,7 +116,8 @@ function FijModoNormal(but) {
     var $row = $(but).parents('tr');
     $row.attr('id', '');
 }
-function FijModoEdit(but) {
+
+function toEditMode(but) {
     $(but).parent().find('#bAcep').show();
     $(but).parent().find('#bCanc').show();
     $(but).parent().find('#bEdit').hide();
@@ -124,56 +125,62 @@ function FijModoEdit(but) {
     var $row = $(but).parents('tr');
     $row.attr('id', 'editing');
 }
-function ModoEdicion($row) {
+
+function isEditMode($row) {
     if ($row.attr('id')=='editing') {
         return true;
     } else {
         return false;
     }
 }
-function rowAcep(but) {
+
+function acceptEdit(but) {
 
     var $row = $(but).parents('tr');
     var $cols = $row.find('td');
-    if (!ModoEdicion($row)) return;
+    if (!isEditMode($row)) return;
 
-    IterarCamposEdit($cols, function($td) {
+    iterateEditableCols($cols, function($td) {
       var cont = $td.find('input').val();
       var id = $td.find('div').attr('id');
       var div = '<div class="animated fadeIn my-2" id="'+id+'">' + cont + '</div>';
       $td.html(div);
     });
-    FijModoNormal(but);
+
+    toNormalMode(but);
     params.onEdit($row);
 }
-function rowCancel(but) {
+
+function cancelEdit(but) {
 
     var $row = $(but).parents('tr');
     var $cols = $row.find('td');
-    if (!ModoEdicion($row)) return;
+    if (!isEditMode($row)) return;
 
-    IterarCamposEdit($cols, function($td) {
+    iterateEditableCols($cols, function($td) {
       var cont = $td.find('input').val();
       var id = $td.find('div').attr('id');
       var div = '<div class="animated fadeIn my-2" id="'+id+'">' + cont + '</div>';
       $td.html(div);
     });
-    FijModoNormal(but);
+    toNormalMode(but);
 }
-function rowEdit(but) {
+
+function startEdit(but) {
     var $row = $(but).parents('tr');
     var $cols = $row.find('td');
-    if (ModoEdicion($row)) return;
+    if (isEditMode($row)) return;
 
-    IterarCamposEdit($cols, function($td) {
+    iterateEditableCols($cols, function($td) {
         var cont = $td.text().trim();
         var id = $td.find('div').attr('id');
         var input = '<div class="md-form my-0" id="'+id+'"> <input class="form-control animated fadeIn form-control-sm"  value="' + cont + '"> </div>';
         $td.html(input);
     });
-    FijModoEdit(but);
+    toEditMode(but);
 }
-function rowElim(but) {
+
+function removeRow(but) {
     var $row = $(but).parents('tr');
     params.onBeforeDelete($row);
     $row.remove();
@@ -216,55 +223,3 @@ var $tab_en_edic = $("#" + tabId);
 	params.onAdd();
 }
 
-function rowAddNewCol(tabId) {
-var $tab_en_edic = $("#" + tabId);
-    var $filas = $tab_en_edic.find('tbody tr');
-    if ($filas.length==0) {
-		alert('NO cols found');
-    } else {
-		$filas.each(function() {
-			$(this).find('td:last').before('<td></td>');
-		});
-    }
-
-	var $row = $tab_en_edic.find('thead tr');
-	var $cols = $row.find('th');
-
-	var colname=prompt("Please enter column name","new column");
-	if (colname!=null){
-       var alertcolname = "Column  " + colname + "  will be created ";
-    }
-	else{
-		colname = "new column";
-	}
-
-	$row.find('th:last').prev().before('<th>'+ colname + '</th>');
-
-	params.onAddCol();
-}
-
-function TableToCSV(tabId, separator) {
-    var datFil = '';
-    var tmp = '';
-	var $tab_en_edic = $("#" + tabId);
-    $tab_en_edic.find('tbody tr').each(function() {
-
-        if (ModoEdicion($(this))) {
-            $(this).find('#bAcep').click();
-        }
-        var $cols = $(this).find('td');
-        datFil = '';
-        $cols.each(function() {
-            if ($(this).attr('name')=='buttons') {
-
-            } else {
-                datFil = datFil + $(this).html() + separator;
-            }
-        });
-        if (datFil!='') {
-            datFil = datFil.substr(0, datFil.length-separator.length);
-        }
-        tmp = tmp + datFil + '\n';
-    });
-    return tmp;
-}
