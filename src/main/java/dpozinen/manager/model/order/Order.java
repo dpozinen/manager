@@ -2,6 +2,8 @@ package dpozinen.manager.model.order;
 
 import dpozinen.manager.model.user.User;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -29,6 +31,7 @@ public @Data class Order {
 	@Enumerated(value = EnumType.STRING)
 	private OrderState payState;
 
-	@ManyToMany
+	@ManyToMany(mappedBy = "orders")
+	@ToString.Exclude @EqualsAndHashCode.Exclude
 	private Set<User> users = new HashSet<>();
 }
