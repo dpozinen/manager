@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.Table;
 import java.math.BigDecimal;
 
 /**
@@ -14,7 +13,6 @@ import java.math.BigDecimal;
  */
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "worker")
 public @Data class Worker extends User {
 
 	private BigDecimal salary;
