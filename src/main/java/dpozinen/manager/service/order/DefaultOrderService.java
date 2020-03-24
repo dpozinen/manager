@@ -8,7 +8,10 @@ import dpozinen.manager.repo.OrderRepo;
 import dpozinen.manager.repo.UserRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -26,6 +29,8 @@ public class DefaultOrderService implements OrderService {
 
 	private final OrderRepo orderRepo;
 	private final UserRepo userRepo;
+	@PersistenceContext
+	EntityManager entityManager;
 
 	public DefaultOrderService(OrderRepo orderRepo, UserRepo userRepo) {
 		this.orderRepo = orderRepo;
@@ -74,6 +79,22 @@ public class DefaultOrderService implements OrderService {
 			log.warn("Could not process edit of order:" + order);
 			return false;
 		}
+	}
+
+	@Override @Transactional
+	public boolean delete(Long id) {
+		if (id != null) {
+			boolean success = false;
+			Set<User> usersOfOrder = orderRepo.findById(id).map(Order::getUsers).orElseGet(HashSet::new);
+			for (User user : usersOfOrder) {
+				user.getOrders().removeIf(o -> o.getId().equals(id));
+				entityManager.merge(user);
+				entityManager.flush();
+				success = true;
+			}
+			orderRepo.deleteById(id);
+			return success;
+		} else return false;
 	}
 
 	@Override

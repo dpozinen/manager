@@ -7,17 +7,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 /**
  * @author dpozinen
  */
-@Controller @RequestMapping("/order")
+@Controller
+@RequestMapping("/order")
 public class OrderController {
 
 	private final OrderService service;
@@ -39,4 +37,10 @@ public class OrderController {
 		else return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 	}
 
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<Order> delete(@PathVariable Long id) {
+		boolean successful = service.delete(id);
+		if (successful) return new ResponseEntity<>(HttpStatus.OK);
+		else return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+	}
 }

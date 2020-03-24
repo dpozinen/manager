@@ -51,10 +51,7 @@ public class DataInit {
 								  .setWorkState(OrderState.DELAYED).setCreatedDate(LocalDateTime.now());
 
 		workerA.getOrders().add(orderA);
-		workerA.getOrders().add(orderB);
-
-		orderRepo.save(orderA);
-		orderRepo.save(orderB);
+		workerB.getOrders().add(orderB);
 
 		userRepo.save(workerA);
 		userRepo.save(workerB);

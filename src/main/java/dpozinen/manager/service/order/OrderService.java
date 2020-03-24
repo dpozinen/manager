@@ -21,4 +21,5 @@ public interface OrderService {
 	Optional<Order> save(Order order);
 	Optional<Order> edit(Order order);
 	boolean edit(Map<String, Object> order);
+	boolean delete(Long id);
 }
