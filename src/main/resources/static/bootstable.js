@@ -36,7 +36,7 @@ $.fn.SetEditable = function (options) {
             var header = $("meta[name='_csrf_header']").attr("content");
 
             var order = {};
-            var id = $row.find('div').each(function () {
+            $row.find('div').each(function () {
                 var id = $(this).attr('id');
                 var value = $(this).text();
                 if (id != undefined && id != 'dueDate' && id != 'createdDate') {
@@ -62,8 +62,30 @@ $.fn.SetEditable = function (options) {
             var data = JSON.stringify(order);
             xhr.send(data);
         },   //Called after edition
-        onBeforeDelete: function () { }, //Called before deletion
-        onDelete: function () { }, //Called after deletion
+        onBeforeDelete: function () {
+            return confirm("Error writing toConfirm order delete?");
+        }, //Called before deletion
+        onDelete: function ($row) {
+            var xhr = new XMLHttpRequest();
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+
+            var id = $row.find('div[id="id"]').text().trim();
+            var url = "/order/delete/" + id;
+
+            xhr.onload = function () {
+                if (this.status != 200) {
+                    alert('Could not process that request, please try again');
+                    location.reload();
+                }
+            };
+
+            xhr.open("DELETE", url, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.setRequestHeader(header, token);
+
+            xhr.send();
+        }, //Called after deletion
         onAdd: function () { },     //Called when added a new row
         $addColButton: function () { }, //rowAddNewCol
         onAddCol: function () { } // Called after adding a column
@@ -203,9 +225,10 @@ function startEdit(but) {
 
 function removeRow(but) {
     var $row = $(but).parents('tr');
-    params.onBeforeDelete($row);
-    $row.remove();
-    params.onDelete();
+    if (params.onBeforeDelete($row)) {
+        $row.remove();
+        params.onDelete($row);
+    }
 }
 
 function rowAddNew(tabId) {
