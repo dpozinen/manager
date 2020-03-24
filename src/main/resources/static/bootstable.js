@@ -144,7 +144,7 @@ function acceptEdit(but) {
         var id = $td.find('div').attr('id');
 
         var cont;
-        if (id == 'workState') {
+        if (id == 'workState' || id == 'payState') {
             cont = $td.find('select').val().replace('_', ' ');
         } else {
             cont = $td.find('input').val();
@@ -168,7 +168,7 @@ function cancelEdit(but) {
         var id = $td.find('div').attr('id');
 
         var cont;
-        if (id == 'workState') {
+        if (id == 'workState' || id == 'payState') {
             cont = $('option[selected]').val();
         } else {
             cont = $td.find('input').attr('value')
@@ -189,7 +189,9 @@ function startEdit(but) {
         var cont = $td.text().trim();
         var id = $td.find('div').attr('id');
 
-        if (id == 'workState') {
+        if (id == 'payState') {
+            makePayStateCell($td);
+        } else if (id == 'workState') {
             makeWorkStateCell($td);
         } else {
             var input = '<div class="md-form my-0" id="' + id + '"> <input class="form-control animated fadeIn form-control-sm"  value="' + cont + '"> </div>';
@@ -250,6 +252,22 @@ function makeWorkStateCell($td) {
                 <option value="QUEUED">QUEUED</option>
                 <option value="DONE">DONE</option>
                 <option value="IN PROGRESS">IN PROGRESS</option>
+            </select>
+        </div>
+    `;
+    var text = $td.find('div').text().trim();
+    $td.html(select);
+
+    $('option[value="'+text+'"]').attr('selected', 'selected');
+}
+
+function makePayStateCell($td) {
+    var select =
+    `
+        <div class="md-form my-0 animated fadeIn" id="payState">
+            <select class="browser-default custom-select custom-select-sm">
+                <option value="PAYED">PAYED</option>
+                <option value="NOT PAYED">NOT PAYED</option>
             </select>
         </div>
     `;
