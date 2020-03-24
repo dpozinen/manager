@@ -246,12 +246,8 @@ function makeWorkStateCell($td) {
             </select>
         </div>
     `;
-    var text = $td.find('div').text();
+    var text = $td.find('div').text().trim();
     $td.html(select);
 
-    $td.find('option').each(function() {
-        if ($(this).text().indexOf(text) >= 0) {
-            $(this).attr('selected', 'selected');
-        }
-    });
+    $('option[value='+text+']').attr('selected', 'selected');
 }
