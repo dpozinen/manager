@@ -274,7 +274,7 @@ function makeWorkStateCell($td) {
     var select = 
     `
         <div class="md-form my-1 animated fadeIn" id="workState">
-            <select class="mdb-select workState colorful-select input-sm dropdown-primary" data-visible-options="2">
+            <select class="mdb-select workState colorful-select input-sm dropdown-primary" style="position:absolute;" > // todo fix hovering over under
                 <option value="QUEUED">QUEUED</option>
                 <option value="DONE">DONE</option>
                 <option value="IN PROGRESS">IN PROGRESS</option>
