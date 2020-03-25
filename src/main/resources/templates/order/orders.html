@@ -89,19 +89,20 @@
             <div class="modal-body mx-3">
 
                 <div class="md-form mb-5">
-                    <input type="email" id="new-order-price" class="form-control validate">
+                    <input type="text" id="new-order-price" class="form-control validate">
                     <label for="new-order-price">Your email</label>
                 </div>
 
                 <div class="md-form mb-4">
-                    <input type="password" id="new-order-notes" class="form-control validate">
+                    <input type="text" id="new-order-notes" class="form-control validate">
                     <label for="new-order-notes">Notes</label>
                 </div>
 
                 <div class="md-form mb-4">
-                    <input type="password" id="new-order-client" class="form-control validate">
-                    <label for="new-order-client">Client</label>
-                    <!--add client search+select  here-->
+                    <select id="new-order-user" class="mdb-select colorful-select dropdown-primary">
+                        <option value="PAYED">PAYED</option>
+                        <option value="NOT PAYED">NOT PAYED</option>
+                    </select>
                 </div>
 
             </div>
@@ -113,6 +114,10 @@
 </div>
 
 <script>
+
+$( '#modalLoginForm' ).on('show.bs.modal', function() {
+    $('#new-order-user').materialSelect();
+});
 
 $(document).ready(function () {
   $('#orders').DataTable({
