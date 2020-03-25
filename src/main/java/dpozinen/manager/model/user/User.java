@@ -51,6 +51,8 @@ public abstract @Data class User {
 
 	public abstract User addOrder(Order order);
 
+	public abstract User deleteOrder(Order order);
+
 	private static final class EmptyUser extends User {
 		EmptyUser() {
 			super.setId(0L); super.setName(""); super.setLastName("");
@@ -107,6 +109,12 @@ public abstract @Data class User {
 		public User addOrder(Order order) {
 			throw new UnsupportedOperationException("Can't edit this");
 		}
+
+		@Override
+		public User deleteOrder(Order order) {
+			throw new UnsupportedOperationException("Can't edit this");
+		}
+
 	}
 
 }

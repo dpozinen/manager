@@ -24,8 +24,16 @@ public @Data class Worker extends User {
 	@EqualsAndHashCode.Exclude
 	private Set<Order> orders = new HashSet<>();
 
-	public Worker addOrder(Order order) {
+	@Override
+	public User addOrder(Order order) {
 		this.orders.add(order.setWorker(this));
 		return this;
+	}
+
+	@Override
+	public User deleteOrder(Order order) {
+		this.orders.remove(order);
+		order.setWorker(null);
+		return null;
 	}
 }

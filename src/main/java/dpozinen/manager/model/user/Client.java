@@ -27,4 +27,10 @@ public @Data class Client extends User {
 		return this;
 	}
 
+	@Override
+	public User deleteOrder(Order order) {
+		this.orders.remove(order);
+		order.setClient(null);
+		return null;
+	}
 }
