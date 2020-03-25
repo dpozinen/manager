@@ -27,7 +27,7 @@ var colEdicHtml = '<td name="buttons">' + newColHtml + '</td>';
 
 $.fn.SetEditable = function (options) {
     var defaults = {
-        editableCols: "1,2,5,6",         //Index to editable columns. If null all td editables. Ex.: "1,2,3,4,5"
+        editableCols: "1,2,5,6",  //Index to editable columns. If null all td editables. Ex.: "1,2,3,4,5"
         $addButton: null,        //Jquery object of "Add" button
         onEdit: function ($row) {
             var xhr = new XMLHttpRequest();
@@ -181,7 +181,6 @@ function acceptEdit(but) {
 }
 
 function cancelEdit(but) {
-
     var $row = $(but).parents('tr');
     var $cols = $row.find('td');
     if (!isEditMode($row)) return;
@@ -203,6 +202,11 @@ function cancelEdit(but) {
 }
 
 function startEdit(but) {
+
+    $('button#bCanc').each(function() {
+        cancelEdit($(this));
+    })
+
     var $row = $(but).parents('tr');
     var $cols = $row.find('td');
     if (isEditMode($row)) return;
@@ -226,7 +230,7 @@ function startEdit(but) {
 function removeRow(but) {
     var $row = $(but).parents('tr');
     if (params.onBeforeDelete($row)) {
-        $row.remove();
+        $row.fadeOut(300, function() { $(this).remove(); });
         params.onDelete($row);
     }
 }
@@ -269,12 +273,12 @@ function rowAddNew(tabId) {
 function makeWorkStateCell($td) {
     var select = 
     `
-        <div class="md-form my-0 animated fadeIn" id="workState">
-            <select class="browser-default custom-select custom-select-sm">
-                <option value="DELAYED">DELAYED</option>
+        <div class="md-form my-1 animated fadeIn" id="workState">
+            <select class="mdb-select workState colorful-select input-sm dropdown-primary" data-visible-options="2">
                 <option value="QUEUED">QUEUED</option>
                 <option value="DONE">DONE</option>
                 <option value="IN PROGRESS">IN PROGRESS</option>
+                <option value="DELAYED">DELAYED</option>
             </select>
         </div>
     `;
@@ -282,13 +286,14 @@ function makeWorkStateCell($td) {
     $td.html(select);
 
     $('option[value="'+text+'"]').attr('selected', 'selected');
+    $('.workState').materialSelect();
 }
 
 function makePayStateCell($td) {
     var select =
     `
-        <div class="md-form my-0 animated fadeIn" id="payState">
-            <select class="browser-default custom-select custom-select-sm">
+        <div class="md-form my-0 animated fadeIn scrollbar square scrollbar-lady-lips thin" id="payState">
+            <select class="mdb-select payState colorful-select input-sm dropdown-primary">
                 <option value="PAYED">PAYED</option>
                 <option value="NOT PAYED">NOT PAYED</option>
             </select>
@@ -298,4 +303,5 @@ function makePayStateCell($td) {
     $td.html(select);
 
     $('option[value="'+text+'"]').attr('selected', 'selected');
+    $('.payState').materialSelect();
 }
