@@ -47,7 +47,7 @@ public abstract @Data class User {
 		return (Client) this;
 	}
 
-	public abstract Set<Order> getOrders();
+	public abstract Set<Order> getOrders(); // maybe change to work in sql statements instead of collections
 
 	public abstract User addOrder(Order order);
 
