@@ -84,16 +84,8 @@ public class DefaultOrderService implements OrderService {
 	@Override @Transactional
 	public boolean delete(Long id) {
 		if (id != null) {
-			boolean success = false;
-			Set<User> usersOfOrder = orderRepo.findById(id).map(Order::getUsers).orElseGet(HashSet::new);
-			for (User user : usersOfOrder) {
-				user.getOrders().removeIf(o -> o.getId().equals(id));
-				entityManager.merge(user);
-				entityManager.flush();
-				success = true;
-			}
 			orderRepo.deleteById(id);
-			return success;
+			return true;
 		} else return false;
 	}
 
