@@ -6,6 +6,7 @@ import dpozinen.manager.model.user.Client;
 import dpozinen.manager.model.user.Role;
 import dpozinen.manager.model.user.User;
 import dpozinen.manager.model.user.Worker;
+import dpozinen.manager.repo.OrderRepo;
 import dpozinen.manager.repo.UserRepo;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -29,24 +30,25 @@ public class DataInit {
 
 	private final UserRepo userRepo;
 	private final PasswordEncoder encoder;
+	private OrderRepo orderRepo;
 
-	public DataInit(UserRepo userRepo) {
+	public DataInit(UserRepo userRepo, OrderRepo orderRepo) {
 		this.userRepo = userRepo;
+		this.orderRepo = orderRepo;
 		this.encoder = new BCryptPasswordEncoder();
 	}
 
 	@EventListener
 	public void populateOrdersAndUsers(ContextRefreshedEvent event) {
-		Worker workerB = (Worker) new Worker().setSalary(BigDecimal.TEN).setRole(Role.ADMIN).setName("Dar")
+		Worker me = (Worker) new Worker().setSalary(BigDecimal.TEN).setRole(Role.ADMIN).setName("Dar")
 											  .setLastName("Poz").setPassword(encoder.encode("123"))
 											  .setUsername("dpozinen").setFatherName("Andrii")
 											  .setPhone("+38(050) 385 0660");
-		Stream.generate(this::randOrder).limit(23).forEach(workerB::addOrder);
 
-		userRepo.save(workerB);
+		Stream.generate(this::randOrder).limit(10).forEach(me::addOrder);
+		userRepo.save(me);
 
-		Stream.generate(this::randUser).limit(100)
-			  .forEach(u -> userRepo.save(u.addOrder(randOrder())));
+		Stream.generate(this::randOrderWithClientAndWorker).limit(100).forEach(orderRepo::save);
 	}
 
 	private Order randOrder() {
@@ -59,15 +61,23 @@ public class DataInit {
 						  .setNotes(notes);
 	}
 
-	private User randUser() {
-		User user = switch (ThreadLocalRandom.current().nextInt(2)) {
-			case 1: yield new Client().setDiscountPercentage(numGen().floatValue());
-			default: yield new Worker().setSalary(numGen(1000));
-		};
+	private Order randOrderWithClientAndWorker() {
+		return randOrder().setWorker(randWorker()).setClient(randClient());
+	}
 
-		return user.setFatherName(nameGen()).setLastName(surnameGen()).setName(nameGen())
-				   .setEmail("%s@gmail.com".formatted(numGen().intValue()))
-				   .setPhone(phoneGen());
+	private Worker randWorker() {
+		return complete(new Worker().setSalary(numGen(1000)));
+	}
+
+	private Client randClient() {
+		return complete(new Client().setDiscountPercentage(numGen(100).floatValue()));
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T extends User> T complete(T t) {
+		return (T) t.setFatherName(nameGen()).setLastName(surnameGen()).setName(nameGen())
+					.setEmail("%s@gmail.com".formatted(numGen().intValue()))
+					.setPhone(phoneGen());
 	}
 
 	private String phoneGen() {
