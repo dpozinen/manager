@@ -39,8 +39,8 @@
             </h1>
         </div>
     </div>
-    <div class="col">
-        <div class="wrapper-editor">
+    <div class="row my-4 justify-content-center">
+        <div class="wrapper-editor" style="max-width: 90%;">
             <table id="orders" class="table" width="100%">
                 <thead>
                 <tr>
@@ -65,11 +65,15 @@
             </table>
         </div>
     </div>
+    <div class="float-right">
+        <a class="btn-floating btn-primary"><i class="fas fa-plus"></i></a>
+    </div>
 </div>
 <script>
 
 $(document).ready(function () {
   $('#orders').DataTable({
+    "scrollX": true,
     "columnDefs": [
       { "orderable": false, "targets": 7 }
     ]
