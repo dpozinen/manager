@@ -1,15 +1,12 @@
 package dpozinen.manager.model.order;
 
-import dpozinen.manager.model.user.User;
+import dpozinen.manager.model.user.Client;
+import dpozinen.manager.model.user.Worker;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author dpozinen
@@ -31,7 +28,9 @@ public @Data class Order {
 	@Enumerated(value = EnumType.STRING)
 	private OrderState payState;
 
-	@ManyToMany(mappedBy = "orders")
-	@ToString.Exclude @EqualsAndHashCode.Exclude
-	private Set<User> users = new HashSet<>();
+	@ManyToOne(cascade = CascadeType.ALL)
+	private Worker worker;
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	private Client client;
 }

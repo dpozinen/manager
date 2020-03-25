@@ -27,12 +27,6 @@ public abstract @Data class User {
 	private String password;
 	private String username;
 
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "user_order",
-			joinColumns = @JoinColumn(name = "user_id"),
-			inverseJoinColumns = @JoinColumn(name = "order_id"))
-	private Set<Order> orders = new HashSet<>();
-
 	public boolean isClient() {
 		return this instanceof Client;
 	}
@@ -52,6 +46,10 @@ public abstract @Data class User {
 	public Client toClient() {
 		return (Client) this;
 	}
+
+	public abstract Set<Order> getOrders();
+
+	public abstract User addOrder(Order order);
 
 	private static final class EmptyUser extends User {
 		EmptyUser() {
@@ -101,7 +99,12 @@ public abstract @Data class User {
 		}
 
 		@Override
-		public User setOrders(Set<Order> orders) {
+		public Set<Order> getOrders() {
+			return new HashSet<>();
+		}
+
+		@Override
+		public User addOrder(Order order) {
 			throw new UnsupportedOperationException("Can't edit this");
 		}
 	}
