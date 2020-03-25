@@ -64,6 +64,19 @@ public class DefaultOrderService implements OrderService {
 	}
 
 	@Override
+	public boolean save(Map<String, Object> order) {
+		Gson gson = new Gson();
+		try {
+			Order parsed = gson.fromJson(gson.toJson(order), Order.class);
+			Optional.ofNullable(parsed).ifPresent(this::save);
+			return true;
+		} catch (JsonSyntaxException e) {
+			log.warn("Could not process edit of order:" + order);
+			return false;
+		}
+	}
+
+	@Override
 	public boolean edit(Map<String, Object> order) {
 		Gson gson = new Gson();
 		try {
