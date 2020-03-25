@@ -3,6 +3,8 @@ package dpozinen.manager.model.order;
 import dpozinen.manager.model.user.Client;
 import dpozinen.manager.model.user.Worker;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -28,9 +30,11 @@ public @Data class Order {
 	@Enumerated(value = EnumType.STRING)
 	private OrderState payState;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.PERSIST)
+	@EqualsAndHashCode.Exclude @ToString.Exclude
 	private Worker worker;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.PERSIST)
+	@EqualsAndHashCode.Exclude @ToString.Exclude
 	private Client client;
 }
