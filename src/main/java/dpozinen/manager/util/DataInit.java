@@ -45,7 +45,7 @@ public class DataInit {
 											  .setUsername("dpozinen").setFatherName("Andrii")
 											  .setPhone("+38(050) 385 0660");
 
-		Stream.generate(this::randOrder).limit(10).forEach(me::addOrder);
+		Stream.generate(() -> randOrder().setClient(randClient())).limit(10).forEach(me::addOrder);
 		userRepo.save(me);
 
 		Stream.generate(this::randOrderWithClientAndWorker).limit(100).forEach(orderRepo::save);
@@ -56,7 +56,7 @@ public class DataInit {
 								.mapToObj(i -> String.valueOf(((char) i)))
 								.collect(Collectors.joining());
 
-		return new Order().setDueDate(dateGen()).setCreatedDate(dateGen()).setWorkState(workStateGen())
+		return new Order().setCreatedDate(dateGen()).setWorkState(workStateGen())
 						  .setPayState(payStateGen()).setPrice(numGen())
 						  .setNotes(notes);
 	}
@@ -103,7 +103,7 @@ public class DataInit {
 	}
 
 	private LocalDateTime dateGen() {
-		int y = ThreadLocalRandom.current().nextInt(1, 2040);
+		int y = ThreadLocalRandom.current().nextInt(1000, 2040);
 		int mo = ThreadLocalRandom.current().nextInt(1, 12);
 		int d = ThreadLocalRandom.current().nextInt(1, 27);
 		int h = ThreadLocalRandom.current().nextInt(1, 24);

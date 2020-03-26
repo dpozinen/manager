@@ -21,7 +21,6 @@ public @Data class Order {
 
 	private BigDecimal price;
 	private LocalDateTime createdDate;
-	private LocalDateTime dueDate;
 	@Lob
 	private String notes;
 
