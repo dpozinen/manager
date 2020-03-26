@@ -17,12 +17,12 @@ public interface OrderRepo extends CrudRepository<Order, Long> {
 	@Query("SELECT o FROM Order o WHERE o.workState = 'QUEUED'")
 	Set<Order> findQueued();
 
-	@Query("DELETE o FROM Order o WHERE o.workState = 'DONE'")
+	@Query("DELETE FROM Order WHERE workState = 'DONE'")
 	void deleteAllDone();
 
-	@Query("DELETE o FROM Order o WHERE o.workState = 'DONE' and o.worker_id = :id")
+	@Query("DELETE FROM Order WHERE workState = 'DONE' and worker_id = :id")
 	void deleteAllDoneOfWorker(@Param("id") Long id);
 
-	@Query("DELETE o FROM Order o WHERE o.workState = 'DONE' and o.client_id = :id")
+	@Query("DELETE FROM Order WHERE workState = 'DONE' and client_id = :id")
 	void deleteAllDoneOfClient(@Param("id") Long id);
 }

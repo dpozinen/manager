@@ -161,11 +161,11 @@ public class DefaultOrderService implements OrderService {
 
 	@Override
 	public void deleteDoneOfUser(Optional<User> user) {
-		Set<Order> doneOrders = user.stream()
-									.flatMap(u -> u.getOrders().stream())
-									.filter(o -> o.getWorkState().equals(OrderState.DONE))
-									.collect(toSet());
-		orderRepo.deleteAll(doneOrders);
+		if (user.isPresent()) {
+			User u = user.get();
+			if (u.isWorker()) orderRepo.deleteAllDoneOfWorker(u.getId());
+			if (u.isClient()) orderRepo.deleteAllDoneOfClient(u.getId());
+		}
 	}
 
 	@Override
