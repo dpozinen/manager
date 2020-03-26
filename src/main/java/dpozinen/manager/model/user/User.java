@@ -53,6 +53,10 @@ public abstract @Data class User {
 
 	public abstract User deleteOrder(Order order);
 
+	public String shortInfo() {
+		return "%s %s".formatted(name, lastName);
+	}
+
 	private static final class EmptyUser extends User {
 		EmptyUser() {
 			super.setId(0L); super.setName(""); super.setLastName("");
