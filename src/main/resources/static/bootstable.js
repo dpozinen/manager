@@ -39,7 +39,7 @@ $.fn.SetEditable = function (options) {
             $row.find('div').each(function () {
                 var id = $(this).attr('id');
                 var value = $(this).text();
-                if (id != undefined && id != 'dueDate' && id != 'createdDate') {
+                if (id != undefined && id != 'client' && id != 'createdDate') {
                     if (id.indexOf('State') >= 0) {
                         order[id] = value.replace(' ', '_');
                     } else {
