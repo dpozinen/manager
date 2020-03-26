@@ -68,6 +68,11 @@ public class UserController {
 		return "/user/login";
 	}
 
+	@GetMapping("/logout")
+	public String logout() {
+		return "/user/login";
+	}
+
 	@RequestMapping("/login/fail")
 	public RedirectView loginFail(@ModelAttribute("username") String username, RedirectAttributes attributes) {
 		attributes.addFlashAttribute("username", username);
