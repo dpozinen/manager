@@ -49,7 +49,7 @@
             <table id="orders" class="table" width="100%">
                 <thead>
                 <tr>
-                    <th class="th-sm">Id</th>
+                    <th class="th-sm" hidden="hidden">Id</th>
                     <th class="th-sm">Status</th>
                     <th class="th-sm">Price</th>
                     <th class="th-sm">Created</th>
@@ -57,8 +57,8 @@
                     <th class="th-sm">Client</th>
                     <th class="th-sm">Notes</th>
                 <tbody>
-                <tr th:each="order : ${orders}" th:href="@{/order/{id} (id=${order.id})}" class="order">
-                    <td><div id="id" class="animated fadeIn" th:text="${order.id}"></div></td>
+                <tr th:each="order : ${orders}" class="order">
+                    <td hidden="hidden"><div id="id" class="animated fadeIn" th:text="${order.id}"></div></td>
                     <td><div id="workState" class="animated fadeIn" th:text="${order.workState}"></div></td>
                     <td><div id="price" class="animated fadeIn" th:text="${order.price}"></div></td>
                     <td><div id="createdDate" class="animated fadeIn" th:text="${#temporals.format(order.createdDate, 'yyyy-MM-dd HH:mm')}"></div></td>
@@ -123,71 +123,71 @@
 
 <script>
 
-$( '#new-order-modal' ).on('show.bs.modal', function() {
-    if ($('#new-order-modal').find('.select-wrapper').length == 0) {
-        $('.new-order-select').materialSelect();
-    }
-});
+    $('#new-order-modal').on('show.bs.modal', function () {
+        if ($('#new-order-modal').find('.select-wrapper').length == 0) {
+            $('.new-order-select').materialSelect();
+        }
+    });
 
-$(document).ready(function () {
-  $('#orders').DataTable({
-    "order": [ [ 3, "desc" ] ],
-    "scrollX": true,
-    "columnDefs": [
-      { "orderable": false, "targets": 7 }
-    ]
-  });
-  $('#orders_wrapper').find('label').each(function () {
-    $(this).parent().append($(this).children());
-  });
-  $('#orders_wrapper .dataTables_filter').find('input').each(function () {
-    const $this = $(this);
-    $this.attr("placeholder", "Search");
-    $this.removeClass('form-control-sm');
-  });
-  $('#orders_wrapper .dataTables_length').addClass('d-flex flex-row');
-  $('#orders_wrapper .dataTables_filter').addClass('md-form');
-  $('#orders_wrapper select').removeClass(
-    'custom-select custom-select-sm form-control form-control-sm');
-  $('#orders_wrapper select').addClass('mdb-select');
-  $('#orders_wrapper .mdb-select').materialSelect();
-  $('#orders_wrapper .dataTables_filter').find('label').remove();
+    $(document).ready(function () {
+        $('#orders').DataTable({
+            "order": [ [3, "desc"] ],
+            "scrollX": true,
+            "columnDefs": [
+                { "orderable": false, "targets": 7 }
+            ]
+        });
+        $('#orders_wrapper').find('label').each(function () {
+            $(this).parent().append($(this).children());
+        });
+        $('#orders_wrapper .dataTables_filter').find('input').each(function () {
+            const $this = $(this);
+            $this.attr("placeholder", "Search");
+            $this.removeClass('form-control-sm');
+        });
+        $('#orders_wrapper .dataTables_length').addClass('d-flex flex-row');
+        $('#orders_wrapper .dataTables_filter').addClass('md-form');
+        $('#orders_wrapper select').removeClass(
+            'custom-select custom-select-sm form-control form-control-sm');
+        $('#orders_wrapper select').addClass('mdb-select');
+        $('#orders_wrapper .mdb-select').materialSelect();
+        $('#orders_wrapper .dataTables_filter').find('label').remove();
 
-  $('#new-order-form').on('submit', function(e) {
-    var order = {};
+        $('#new-order-form').on('submit', function (e) {
+            var order = {};
 
-    order['notes'] = $('#new-order-notes').val();
-    order['payed'] = $('#new-order-payed').val();
-    order['price'] = $('#new-order-price').val();
-    order['client'] = $('#new-order-client').val();
+            order['notes'] = $('#new-order-notes').val();
+            order['payed'] = $('#new-order-payed').val();
+            order['price'] = $('#new-order-price').val();
+            order['client'] = $('#new-order-client').val();
 
-    var token = $("meta[name='_csrf']").attr("content");
-    var header = $("meta[name='_csrf_header']").attr("content");
-    var xhr = new XMLHttpRequest();
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            var xhr = new XMLHttpRequest();
 
-    var url = "/order/create";
+            var url = "/order/create";
 
-     xhr.onload = function () {
+            xhr.onload = function () {
                 if (this.status != 200) {
                     alert('Could not process that request, please try again');
                     location.reload();
                 }
             };
 
-        xhr.open("POST", url, true);
+            xhr.open("POST", url, true);
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.setRequestHeader(header, token);
 
             xhr.send(JSON.stringify(order));
-  });
+        });
 
-});
+    });
 
-$(document).click(function() {
-  $('.order').animate({height: '50px'});
-});
+    $(document).click(function () {
+        $('.order').animate({ height: '50px' });
+    });
 
-$('#orders').SetEditable();
+    $('#orders').SetEditable();
 
 
 </script>
