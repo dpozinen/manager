@@ -3,6 +3,7 @@ package dpozinen.manager.controller;
 
 import dpozinen.manager.model.order.Order;
 import dpozinen.manager.service.order.OrderService;
+import dpozinen.manager.service.user.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,10 +19,12 @@ import java.util.Map;
 @RequestMapping("/order")
 public class OrderController {
 
-	private final OrderService service;
+	private final OrderService orderService;
+	private final UserService userService;
 
-	public OrderController(OrderService service) {
-		this.service = service;
+	public OrderController(OrderService orderService, UserService userService) {
+		this.orderService = orderService;
+		this.userService = userService;
 	}
 
 	@GetMapping("/all")
@@ -32,14 +35,21 @@ public class OrderController {
 
 	@PostMapping("/edit")
 	public ResponseEntity<Order> edit(@RequestBody Map<String, Object> order) {
-		boolean successful = service.edit(order);
+		boolean successful = orderService.edit(order);
+		if (successful) return new ResponseEntity<>(HttpStatus.OK);
+		else return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+	}
+
+	@PostMapping("/create")
+	public ResponseEntity<Order> create(@RequestBody Map<String, Object> order) {
+		boolean successful = orderService.save(order);
 		if (successful) return new ResponseEntity<>(HttpStatus.OK);
 		else return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 	}
 
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<Order> delete(@PathVariable Long id) {
-		boolean successful = service.delete(id);
+		boolean successful = orderService.delete(id);
 		if (successful) return new ResponseEntity<>(HttpStatus.OK);
 		else return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 	}
