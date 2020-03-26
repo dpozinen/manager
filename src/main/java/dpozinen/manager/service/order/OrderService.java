@@ -19,7 +19,7 @@ public interface OrderService {
 	Optional<Order> getById(Long id);
 
 	Optional<Order> save(Order order);
-	boolean save(Map<String, Object> order);
+	boolean save(Map<String, Object> order, String workerName);
 	Optional<Order> edit(Order order);
 	boolean edit(Map<String, Object> order);
 	boolean delete(Long id);

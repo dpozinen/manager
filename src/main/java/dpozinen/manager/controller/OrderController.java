@@ -6,6 +6,7 @@ import dpozinen.manager.service.order.OrderService;
 import dpozinen.manager.service.user.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -42,8 +43,8 @@ public class OrderController {
 	}
 
 	@PostMapping("/create")
-	public ResponseEntity<Order> create(@RequestBody Map<String, Object> order) {
-		boolean successful = orderService.save(order);
+	public ResponseEntity<Order> create(@RequestBody Map<String, Object> order, Authentication authentication) {
+		boolean successful = orderService.save(order, authentication.getName());
 		if (successful) return new ResponseEntity<>(HttpStatus.OK);
 		else return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 	}

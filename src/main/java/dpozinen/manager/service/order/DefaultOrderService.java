@@ -6,6 +6,7 @@ import dpozinen.manager.model.order.Order;
 import dpozinen.manager.model.order.OrderState;
 import dpozinen.manager.model.user.Client;
 import dpozinen.manager.model.user.User;
+import dpozinen.manager.model.user.Worker;
 import dpozinen.manager.repo.OrderRepo;
 import dpozinen.manager.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
 
 import static java.util.stream.Collectors.toSet;
@@ -63,30 +65,48 @@ public class DefaultOrderService implements OrderService {
 	}
 
 	@Override
-	public boolean save(Map<String, Object> order) {
+	public boolean save(Map<String, Object> order, String workerName) {
 		Gson gson = new Gson();
 		try {
 			Client[] client = new Client[] { null };
 			String receivedClient = order.get("client").toString();
-			if (receivedClient.matches("\\d+")) {
-				Optional<User> byId = userService.getById(Long.valueOf(receivedClient));
-				client[0] = byId.map(User::toClient).orElseThrow(() -> new IllegalArgumentException("User by id %s Not Found".formatted(receivedClient)));
-			} else {
+
+			if (receivedClient.matches("\\d+"))
+				findById(client, receivedClient);
+			else
 				createNewOnTheGo(client, receivedClient);
-			}
 			order.remove("client");
 
 			String json = gson.toJson(order);
 			Order parsed = gson.fromJson(json, Order.class);
 			Optional.ofNullable(parsed).ifPresent(o -> {
-				parsed.setClient(client[0]).setCreatedDate(LocalDateTime.now()).setWorkState(OrderState.QUEUED);
+				o.setClient(client[0]).setWorker(getCurrentWorker(workerName))
+				 .setCreatedDate(LocalDateTime.now()).setWorkState(OrderState.QUEUED);
 				save(o);
 			});
 			return true;
 		} catch (JsonSyntaxException e) {
-			log.warn("Could not process edit of order:" + order);
+			log.warn("Could not process edit of order: " + order);
 			return false;
 		}
+	}
+
+	private void findById(Client[] client, String receivedClient) {
+		Optional<User> byId = userService.getById(Long.valueOf(receivedClient));
+		client[0] = byId.map(User::toClient).orElseThrow(() -> {
+			String notFoundLog = "Client by id %s Not Found".formatted(receivedClient);
+			return new IllegalArgumentException(notFoundLog);
+		});
+	}
+
+	private Worker getCurrentWorker(String workerName) {
+		Supplier<IllegalStateException> workerNotFoundException = () -> {
+			String log = "Could not find currently logged in user by name %s".formatted(workerName);
+			return new IllegalStateException(log);
+		};
+
+		User user = userService.getByUsername(workerName).orElseThrow(workerNotFoundException);
+		return user.toWorker();
 	}
 
 	private void createNewOnTheGo(Client[] client, String receivedClient) {
