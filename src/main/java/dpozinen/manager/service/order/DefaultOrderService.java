@@ -143,6 +143,11 @@ public class DefaultOrderService implements OrderService {
 	}
 
 	@Override
+	public Set<Order> getQueuedOrders() {
+		return orderRepo.findQueued();
+	}
+
+	@Override
 	public Optional<Order> edit(Order order) {
 		throw new UnsupportedOperationException("Edits not implemented yet");
 	}
