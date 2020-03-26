@@ -27,8 +27,8 @@ var colEdicHtml = '<td name="buttons">' + newColHtml + '</td>';
 
 $.fn.SetEditable = function (options) {
     var defaults = {
-        editableCols: "1,2,5,6",  //Index to editable columns. If null all td editables. Ex.: "1,2,3,4,5"
-        $addButton: null,        //Jquery object of "Add" button
+        editableCols: "1,2,4,6",
+        $addButton: null,
         onEdit: function ($row) {
             var xhr = new XMLHttpRequest();
             var url = "/order/edit";
