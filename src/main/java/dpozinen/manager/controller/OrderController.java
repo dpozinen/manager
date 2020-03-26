@@ -28,6 +28,23 @@ public class OrderController {
 		this.userService = userService;
 	}
 
+	@GetMapping("/queued")
+	public String queuedOrders(Model model, Authentication authentication) {
+		model.addAttribute("orders", orderService.getQueuedOrders());
+		model.addAttribute("clients", userService.clients());
+		return "/order/orders";
+	}
+
+	@GetMapping("/mine")
+	public String myOrders(Model model, Authentication authentication) {
+		userService.getByUsername(authentication.getName())
+				   .ifPresent(u -> {
+					   model.addAttribute("orders", u.getOrders());
+					   model.addAttribute("clients", userService.clients());
+				   });
+		return "/order/orders";
+	}
+
 	@GetMapping("/all")
 	public String orders(Model model) {
 		model.addAttribute("orders", orderService.orders());
