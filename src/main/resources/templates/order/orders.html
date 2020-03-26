@@ -46,7 +46,13 @@
             <li id="my-orders" class="nav-item">
                 <a class="nav-link" th:href="@{/order/mine}">My orders</a>
             </li>
+            <li id="new-orders" class="nav-item">
+                <a class="nav-link" th:href="@{/order/queued}">New orders</a>
+            </li>
         </ul>
+    </div>
+    <div id="logout">
+        <a class="nav-link" style="color: #fff" th:href="@{/user/logout}">Logout</a>
     </div>
 </nav>
 
