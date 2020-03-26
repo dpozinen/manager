@@ -29,7 +29,8 @@ public class OrderController {
 
 	@GetMapping("/all")
 	public String orders(Model model) {
-		model.addAttribute("orders", service.orders());
+		model.addAttribute("orders", orderService.orders());
+		model.addAttribute("clients", userService.clients());
 		return "/order/orders";
 	}
 
