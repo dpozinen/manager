@@ -4,6 +4,7 @@ import dpozinen.manager.model.user.Client;
 import dpozinen.manager.model.user.User;
 import dpozinen.manager.model.user.Worker;
 
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -18,7 +19,7 @@ public interface UserService {
 	Client save(Client client);
 	Worker save(Worker worker);
 
-	User getById(Long id);
-	User getByUsername(String username);
+	Optional<User> getById(Long id);
+	Optional<User> getByUsername(String username);
 	User getByEmail(String email);
 }

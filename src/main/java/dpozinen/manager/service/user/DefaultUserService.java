@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.StreamSupport;
 
@@ -62,19 +63,13 @@ public class DefaultUserService implements UserService {
 	}
 
 	@Override
-	public User getById(Long id) {
-		return userRepo.findById(id).orElseGet(() -> {
-			log.warn("Could not find user by id: " + id);
-			return User.EMPTY;
-		});
+	public Optional<User> getById(Long id) {
+		return userRepo.findById(id);
 	}
 
 	@Override
-	public User getByUsername(String username) {
-		return userRepo.findByUsername(username).orElseGet(() -> {
-			log.warn("Could not find user by username: " + username);
-			return User.EMPTY;
-		});
+	public Optional<User> getByUsername(String username) {
+		return userRepo.findByUsername(username);
 	}
 
 	@Override

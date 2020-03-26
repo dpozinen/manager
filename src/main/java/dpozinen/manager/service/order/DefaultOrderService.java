@@ -3,15 +3,16 @@ package dpozinen.manager.service.order;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import dpozinen.manager.model.order.Order;
+import dpozinen.manager.model.order.OrderState;
+import dpozinen.manager.model.user.Client;
 import dpozinen.manager.model.user.User;
 import dpozinen.manager.repo.OrderRepo;
-import dpozinen.manager.repo.UserRepo;
+import dpozinen.manager.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -28,13 +29,11 @@ import static java.util.stream.Collectors.toSet;
 public class DefaultOrderService implements OrderService {
 
 	private final OrderRepo orderRepo;
-	private final UserRepo userRepo;
-	@PersistenceContext
-	EntityManager entityManager;
+	private final UserService userService;
 
-	public DefaultOrderService(OrderRepo orderRepo, UserRepo userRepo) {
+	public DefaultOrderService(OrderRepo orderRepo, UserService userService) {
 		this.orderRepo = orderRepo;
-		this.userRepo = userRepo;
+		this.userService = userService;
 	}
 
 	@Override
@@ -49,7 +48,7 @@ public class DefaultOrderService implements OrderService {
 
 	@Override
 	public Set<Order> ordersOfUserById(Long id) {
-		return userRepo.findById(id).map(User::getOrders).orElseGet(HashSet::new);
+		return userService.getById(id).map(User::getOrders).orElseGet(HashSet::new);
 	}
 
 	@Override
@@ -67,13 +66,34 @@ public class DefaultOrderService implements OrderService {
 	public boolean save(Map<String, Object> order) {
 		Gson gson = new Gson();
 		try {
-			Order parsed = gson.fromJson(gson.toJson(order), Order.class);
-			Optional.ofNullable(parsed).ifPresent(this::save);
+			Client[] client = new Client[] { null };
+			String receivedClient = order.get("client").toString();
+			if (receivedClient.matches("\\d+")) {
+				Optional<User> byId = userService.getById(Long.valueOf(receivedClient));
+				client[0] = byId.map(User::toClient).orElseThrow(() -> new IllegalArgumentException("User by id %s Not Found".formatted(receivedClient)));
+			} else {
+				createNewOnTheGo(client, receivedClient);
+			}
+			order.remove("client");
+
+			String json = gson.toJson(order);
+			Order parsed = gson.fromJson(json, Order.class);
+			Optional.ofNullable(parsed).ifPresent(o -> {
+				parsed.setClient(client[0]).setCreatedDate(LocalDateTime.now()).setWorkState(OrderState.QUEUED);
+				save(o);
+			});
 			return true;
 		} catch (JsonSyntaxException e) {
 			log.warn("Could not process edit of order:" + order);
 			return false;
 		}
+	}
+
+	private void createNewOnTheGo(Client[] client, String receivedClient) {
+		String[] split = receivedClient.replaceAll("\\s+", " ").split(" ");
+		client[0] = new Client().setName(split[0]).toClient();
+		if (split.length > 1) client[0].setLastName(split[1]);
+		if (split.length > 3) client[0].setFatherName(split[2]);
 	}
 
 	@Override
