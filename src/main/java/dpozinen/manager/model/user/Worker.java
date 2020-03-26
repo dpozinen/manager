@@ -3,6 +3,7 @@ package dpozinen.manager.model.user;
 import dpozinen.manager.model.order.Order;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -21,7 +22,7 @@ public @Data class Worker extends User {
 	private Role role;
 
 	@OneToMany(mappedBy = "worker", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@EqualsAndHashCode.Exclude
+	@EqualsAndHashCode.Exclude @ToString.Exclude
 	private Set<Order> orders = new HashSet<>();
 
 	@Override

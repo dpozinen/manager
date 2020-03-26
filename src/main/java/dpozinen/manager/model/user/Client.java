@@ -3,6 +3,7 @@ package dpozinen.manager.model.user;
 import dpozinen.manager.model.order.Order;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -20,6 +21,7 @@ public @Data class Client extends User {
 	private Float discountPercentage;
 
 	@OneToMany(mappedBy = "client", orphanRemoval = true, cascade = CascadeType.ALL)
+	@EqualsAndHashCode.Exclude @ToString.Exclude
 	private Set<Order> orders = new HashSet<>();
 
 	public Client addOrder(Order order) {
