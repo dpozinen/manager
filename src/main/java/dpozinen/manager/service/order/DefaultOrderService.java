@@ -143,6 +143,32 @@ public class DefaultOrderService implements OrderService {
 	}
 
 	@Override
+	public void deleteAllDone() {
+		orderRepo.deleteAllDone();
+	}
+
+	@Override
+	public void deleteDoneOfUserById(Long id) {
+		Optional<User> user = userService.getById(id);
+		deleteDoneOfUser(user);
+	}
+
+	@Override
+	public void deleteDoneOfUserByUsername(String username) {
+		Optional<User> user = userService.getByUsername(username);
+		deleteDoneOfUser(user);
+	}
+
+	@Override
+	public void deleteDoneOfUser(Optional<User> user) {
+		Set<Order> doneOrders = user.stream()
+									.flatMap(u -> u.getOrders().stream())
+									.filter(o -> o.getWorkState().equals(OrderState.DONE))
+									.collect(toSet());
+		orderRepo.deleteAll(doneOrders);
+	}
+
+	@Override
 	public Set<Order> getQueuedOrders() {
 		return orderRepo.findQueued();
 	}

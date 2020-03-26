@@ -15,6 +15,7 @@ public interface OrderService {
 	Set<Order> orders();
 	Set<Order> ordersOf(User user);
 	Set<Order> ordersOfUserById(Long id);
+	Set<Order> getQueuedOrders();
 
 	Optional<Order> getById(Long id);
 
@@ -22,7 +23,11 @@ public interface OrderService {
 	boolean save(Map<String, Object> order, String workerName);
 	Optional<Order> edit(Order order);
 	boolean edit(Map<String, Object> order);
-	boolean delete(Long id);
 
-	Set<Order> getQueuedOrders();
+	boolean delete(Long id);
+	void deleteAllDone();
+	void deleteDoneOfUser(Optional<User> id);
+	void deleteDoneOfUserById(Long id);
+	void deleteDoneOfUserByUsername(String username);
+
 }

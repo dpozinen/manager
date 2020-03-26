@@ -29,15 +29,15 @@ public class OrderController {
 	}
 
 	@GetMapping("/queued")
-	public String queuedOrders(Model model, Authentication authentication) {
+	public String queuedOrders(Model model, Authentication auth) {
 		model.addAttribute("orders", orderService.getQueuedOrders());
 		model.addAttribute("clients", userService.clients());
 		return "/order/orders";
 	}
 
 	@GetMapping("/mine")
-	public String myOrders(Model model, Authentication authentication) {
-		userService.getByUsername(authentication.getName())
+	public String myOrders(Model model, Authentication auth) {
+		userService.getByUsername(auth.getName())
 				   .ifPresent(u -> {
 					   model.addAttribute("orders", u.getOrders());
 					   model.addAttribute("clients", userService.clients());
@@ -60,8 +60,8 @@ public class OrderController {
 	}
 
 	@PostMapping("/create")
-	public ResponseEntity<Order> create(@RequestBody Map<String, Object> order, Authentication authentication) {
-		boolean successful = orderService.save(order, authentication.getName());
+	public ResponseEntity<Order> create(@RequestBody Map<String, Object> order, Authentication auth) {
+		boolean successful = orderService.save(order, auth.getName());
 		if (successful) return new ResponseEntity<>(HttpStatus.OK);
 		else return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 	}
@@ -71,5 +71,11 @@ public class OrderController {
 		boolean successful = orderService.delete(id);
 		if (successful) return new ResponseEntity<>(HttpStatus.OK);
 		else return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+	}
+
+	@DeleteMapping("mine/deleteDone")
+	public ResponseEntity<Order> deleteMineDone(Authentication auth) {
+		orderService.deleteDoneOfUserByUsername(auth.getName());
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
