@@ -71,12 +71,12 @@
         </div>
     </div>
     <div class="float-right">
-        <a href="" data-toggle="modal" data-target="#modalLoginForm" class="btn-floating btn-primary"><i class="fas fa-plus"></i></a>
+        <a href="" data-toggle="modal" data-target="#new-order-modal" class="btn-floating btn-primary"><i class="fas fa-plus"></i></a>
     </div>
 </div>
 
 
-<div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+<div class="modal fade" id="new-order-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -93,21 +93,26 @@
                     <label for="new-order-price">Your email</label>
                 </div>
 
-                <div class="md-form mb-4">
+                <div class="md-form mb-5">
                     <input type="text" id="new-order-notes" class="form-control validate">
                     <label for="new-order-notes">Notes</label>
                 </div>
 
-                <div class="md-form mb-4">
-                    <select id="new-order-user" class="mdb-select colorful-select dropdown-primary">
+                <div class="md-form mb-5">
+                    <select class="new-order-select mdb-select colorful-select dropdown-primary mb-4">
                         <option value="PAYED">PAYED</option>
                         <option value="NOT PAYED">NOT PAYED</option>
                     </select>
                 </div>
 
+                <select th:field="${clients}" class="mdb-select md-form mb-5 new-order-select" editable="true" searchable="Search and add here...">
+                    <option value="" disabled selected>Choose your option</option>
+                    <option th:each="client : ${clients}" th:value="${client.id}" th:text="${client.name + ' ' + client.lastName + ' ' + client.fatherName}"></option>
+                </select>
+
             </div>
             <div class="modal-footer d-flex justify-content-center">
-                <button class="btn btn-default">Login</button>
+                <button class="btn btn-default">OK</button>
             </div>
         </div>
     </div>
@@ -115,8 +120,10 @@
 
 <script>
 
-$( '#modalLoginForm' ).on('show.bs.modal', function() {
-    $('#new-order-user').materialSelect();
+$( '#new-order-modal' ).on('show.bs.modal', function() {
+    if ($('#new-order-modal').find('.select-wrapper').length == 0) {
+        $('.new-order-select').materialSelect();
+    }
 });
 
 $(document).ready(function () {
@@ -142,8 +149,31 @@ $(document).ready(function () {
   $('#orders_wrapper .mdb-select').materialSelect();
   $('#orders_wrapper .dataTables_filter').find('label').remove();
 
-  $('#modalLoginForm').on('submit', function(e) {
+  $('#new-order-modal').on('submit', function(e) {
+    var order = {};
 
+    order[notes] = $('#new-order-notes').val();
+    order[payed] = $('#new-order-payed').val();
+    order[price] = $('#new-order-price').val();
+
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    var xhr = new XMLHttpRequest();
+
+    var url = "/order/create";
+
+     xhr.onload = function () {
+                if (this.status != 200) {
+                    alert('Could not process that request, please try again');
+                    location.reload();
+                }
+            };
+
+        xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.setRequestHeader(header, token);
+
+            xhr.send(JSON.stringify(order));
   });
 
 });
