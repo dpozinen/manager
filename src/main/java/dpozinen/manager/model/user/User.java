@@ -54,7 +54,7 @@ public abstract @Data class User {
 	public abstract User deleteOrder(Order order);
 
 	public String shortInfo() {
-		return "%s %s".formatted(name, lastName);
+		return "%s %s".formatted(name, lastName == null ? "" : lastName);
 	}
 
 	private static final class EmptyUser extends User {
