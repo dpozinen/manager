@@ -1,6 +1,7 @@
 package dpozinen.manager.security;
 
 import dpozinen.manager.model.user.Role;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -21,6 +22,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final UserDetailsService service;
 
+	@Value("${enableH2}")
+	private Boolean enableH2;
+
 	public SecurityConfig(UserDetailsService service) {
 		this.service = service;
 	}
@@ -37,15 +41,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable()
-			.headers().frameOptions().sameOrigin()
-			.and()
+		(enableH2 ? enableH2(http) : http)
 				.authorizeRequests()
-			.antMatchers("/user/register", "/user/login").permitAll()
-			.antMatchers("/h2/**").hasRole(Role.DEV.toString())
-			.antMatchers("/user/all", "/user/worker/save").hasAnyRole(Role.ADMIN.toString(), Role.DEV.toString())
-			.antMatchers("/user/*").hasAnyRole(Role.USER.toString(), Role.ADMIN.toString())
-			.anyRequest().authenticated()
+				.antMatchers("/user/register", "/user/login").permitAll()
+				.antMatchers("/h2/**").hasRole(Role.DEV.toString())
+				.antMatchers("/user/all", "/user/worker/save").hasAnyRole(Role.ADMIN.toString(), Role.DEV.toString())
+				.antMatchers("/user/*").hasAnyRole(Role.USER.toString(), Role.ADMIN.toString())
+				.anyRequest().authenticated()
 			.and()
 				.formLogin()
 				.loginPage("/user/login")
@@ -58,6 +60,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.logoutUrl("/user/logout")
 				.invalidateHttpSession(true)
 				.deleteCookies("JSESSIONID");
+	}
+
+	protected HttpSecurity enableH2(HttpSecurity http) throws Exception {
+		return http.csrf().disable()
+			   .headers().frameOptions().sameOrigin().and();
 	}
 
 	@Bean
