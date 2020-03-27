@@ -13,14 +13,13 @@ public class MainController {
 
 	@GetMapping({"", "/", "home"})
 	public String home() {
-		return "home";
+		return "redirect:/me";
 	}
 
 	@RequestMapping("/forbidden")
 	public String error403() {
 		return "/403";
 	}
-
 
 	@GetMapping("/me")
 	public String me(Authentication authentication) {
