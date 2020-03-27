@@ -4,8 +4,194 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title th:text="${worker.name + ' ' + worker.lastName}"></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Orders</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <!-- DataTables CSS -->
+    <link th:href="@{/md/css/addons/datatables.min.css}" rel="stylesheet">
+    <!-- DataTables JS -->
+    <script th:src="@{/md/js/addons/datatables.min.js}" type="text/javascript"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.9/js/material.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.9/js/ripples.min.js"></script>
+    <script type="text/javascript" th:src="@{/md/js/mdb.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/md/css/mdb.min.css}">
+    <script type="text/javascript" th:src="@{/js/bootstable.js}"></script>
+    <script type="text/javascript" th:src="@{/js/newOrderOnSubmit.js}"></script>
+    <script type="text/javascript" th:src="@{/js/tableDocumentReady.js}"></script>
+    <script type="text/javascript" th:src="@{/js/navBar.js}"></script>
+
 </head>
 <body>
+
+<nav class="navbar navbar-expand-lg navbar-dark primary-color">
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li id="me" class="nav-item">
+                <a class="nav-link" th:href="@{/me}">Me</a>
+            </li>
+            <li id="my-orders" class="nav-item">
+                <a class="nav-link" th:href="@{/order/mine}">My orders</a>
+            </li>
+            <li id="all-orders" class="nav-item">
+                <a class="nav-link" th:href="@{/order/all}">All Orders</a>
+            </li>
+            <li id="new-orders" class="nav-item">
+                <a class="nav-link" th:href="@{/order/queued}">All New orders</a>
+            </li>
+        </ul>
+    </div>
+    <div id="logout">
+        <a class="nav-link" style="color: #fff" th:href="@{/user/logout}">Logout</a>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row justify-content-center my-4">
+        <div class="col-md-5">
+            <div class="card card-cascade narrower">
+
+                <div class="view view-cascade overlay">
+                    <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Lightbox/Thumbnail/img%20(147).jpg"
+                         alt="Card image cap">
+                    <a><div class="mask rgba-white-slight"></div></a>
+                </div>
+
+                <div class="card-body card-body-cascade">
+                    <h5 class="blue-text pb-2 pt-1"><i class="fas fa-user-tie"></i>  Worker</h5>
+                    <h4 class="font-weight-bold card-title" th:text="${worker.name + ' ' + worker.lastName}"></h4>
+                    <a class="btn btn-primary" data-toggle="modal" data-target="#new-order-modal">New Order</a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="container justify-content-center">
+    <div class="row my-5 text-center">
+        <div class="col">
+            <h1 class="h1-responsive">
+                Orders
+            </h1>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="wrapper-editor">
+            <table id="orders" class="table" width="100%">
+                <thead>
+                <tr>
+                    <th class="th-sm" hidden="hidden">Id</th>
+                    <th class="th-sm">Status</th>
+                    <th class="th-sm">Price</th>
+                    <th class="th-sm">Created</th>
+                    <th class="th-sm">Payed</th>
+                    <th class="th-sm">Client</th>
+                    <th class="th-sm">Notes</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="order : ${orders}" class="order">
+                    <td hidden="hidden"><div id="id" class="animated fadeIn" th:text="${order.id}"></div></td>
+                    <td><div id="workState" class="animated fadeIn" th:text="${order.workState}"></div></td>
+                    <td><div id="price" class="animated fadeIn" th:text="${order.price}"></div></td>
+                    <td><div id="createdDate" class="animated fadeIn" th:text="${#temporals.format(order.createdDate, 'yyyy-MM-dd HH:mm')}"></div></td>
+                    <td><div id="payState" class="animated fadeIn" th:text="${order.payState}"></div></td>
+                    <td><div id="client" class="animated fadeIn" th:text="${order.client.shortInfo()}"></div></td>
+                    <td><div id="notes" class="animated fadeIn" th:text="${order.notes}"></div></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="modal fade" id="new-order-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100 font-weight-bold">Add Order</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="new-order-form">
+                <div class="modal-body mx-3">
+
+                    <div class="md-form mb-5">
+                        <input type="text" id="new-order-price" required class="form-control">
+                        <label for="new-order-price">Price</label>
+                    </div>
+
+                    <div class="md-form mb-5">
+                        <input type="text" id="new-order-notes" class="form-control">
+                        <label for="new-order-notes">Notes</label>
+                    </div>
+
+                    <div class="md-form mb-5">
+                        <select id="new-order-payed" required class="new-order-select mdb-select colorful-select dropdown-primary mb-4">
+                            <option value="" aria-selected="true">Choose option</option>
+                            <option value="PAYED">PAYED</option>
+                            <option value="NOT_PAYED">NOT PAYED</option>
+                        </select>
+                    </div>
+
+                    <select id="new-order-client" required th:field="${clients}" class="mdb-select md-form mb-5 new-order-select" editable="true" searchable="Search and add here...">
+                        <option value="" aria-selected="true">Choose option</option>
+                        <option th:each="client : ${clients}" th:value="${client.id}" th:text="${client.name + ' ' + client.lastName + ' ' + client.fatherName}"></option>
+                    </select>
+
+                </div>
+                <div class="modal-footer d-flex justify-content-center">
+                    <button class="btn btn-default" type="submit">OK</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $('#new-order-modal').on('show.bs.modal', function () {
+        if ($('#new-order-modal').find('.select-wrapper').length == 0) {
+            $('.new-order-select').materialSelect();
+        }
+    });
+
+    $(document).ready(function () {
+        tableDocumentReady();
+        newOrderOnSubmit();
+        navBarInit();
+    });
+
+    $(document).click(function () {
+        $('.order').animate({ height: '50px' });
+    });
+
+    $('#orders').SetEditable();
+
+</script>
+
 
 </body>
 </html>
