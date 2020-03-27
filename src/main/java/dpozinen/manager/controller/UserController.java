@@ -1,6 +1,7 @@
 package dpozinen.manager.controller;
 
 import dpozinen.manager.model.user.Client;
+import dpozinen.manager.model.user.User;
 import dpozinen.manager.model.user.Worker;
 import dpozinen.manager.service.user.UserService;
 import org.springframework.stereotype.Controller;
@@ -9,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
+
+import java.util.Optional;
 
 /**
  * @author dpozinen
@@ -23,7 +26,15 @@ public class UserController {
 		this.service = service;
 	}
 
-	@GetMapping("/{id}")
+	@GetMapping("/{username}")
+	public String getUser(@PathVariable String username) {
+		Optional<Long> id = service.getByUsername(username).map(User::getId);
+
+		if (id.isPresent()) return "forward:/user/id/%d".formatted(id.get());
+		else return "/user/notFound";
+	}
+
+	@GetMapping("/id/{id}")
 	public String getUser(@PathVariable Long id, Model model) {
 		var user = service.getById(id);
 
@@ -42,13 +53,13 @@ public class UserController {
 	@PostMapping("/client/save")
 	public ModelAndView save(@ModelAttribute Client client) {
 		service.save(client);
-		return new ModelAndView("redirect:/user/" + client.getId());
+		return new ModelAndView("redirect:/user/id/" + client.getId());
 	}
 
 	@PostMapping("/worker/save")
 	public ModelAndView save(@ModelAttribute Worker worker) {
 		service.save(worker);
-		return new ModelAndView("redirect:/user/" + worker.getId());
+		return new ModelAndView("redirect:/user/id/" + worker.getId());
 	}
 
 	@GetMapping("/all")
