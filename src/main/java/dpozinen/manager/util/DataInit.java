@@ -40,7 +40,7 @@ public class DataInit {
 
 	@EventListener
 	public void populateOrdersAndUsers(ContextRefreshedEvent event) {
-		Worker me = (Worker) new Worker().setSalary(BigDecimal.TEN).setRole(Role.ADMIN).setName("Dar")
+		Worker me = (Worker) new Worker().setSalary(BigDecimal.TEN).setRole(Role.DEV).setName("Dar")
 											  .setLastName("Poz").setPassword(encoder.encode("123"))
 											  .setUsername("dpozinen").setFatherName("Andrii")
 											  .setPhone("+38(050) 385 0660");
