@@ -73,7 +73,7 @@ public class OrderController {
 		else return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 	}
 
-	@DeleteMapping("mine/deleteDone")
+	@DeleteMapping("/mine/deleteDone")
 	public ResponseEntity<Order> deleteMineDone(Authentication auth) {
 		orderService.deleteDoneOfUserByUsername(auth.getName());
 		return new ResponseEntity<>(HttpStatus.OK);
