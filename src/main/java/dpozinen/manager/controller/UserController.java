@@ -40,14 +40,18 @@ public class UserController {
 
 		if (user.isEmpty()) {
 			return "/user/notFound";
-		} else if (user.get().isWorker()) {
-			model.addAttribute("worker", user.get().toWorker());
-			return "/user/worker";
-		} else if (user.get().isClient()) {
-			model.addAttribute("client", user.get().toClient());
-			return "/user/client";
+		} else {
+			model.addAttribute("orders", user.get().getOrders());
+			model.addAttribute("clients", service.clients());
+
+			if (user.get().isWorker()) {
+				model.addAttribute("worker", user.get().toWorker());
+				return "/user/worker";
+			} else {
+				model.addAttribute("client", user.get().toClient());
+				return "/user/client";
+			}
 		}
-		return "/error";
 	}
 
 	@PostMapping("/client/save")
