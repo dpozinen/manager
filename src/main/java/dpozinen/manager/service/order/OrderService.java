@@ -2,7 +2,9 @@ package dpozinen.manager.service.order;
 
 import dpozinen.manager.model.order.Order;
 import dpozinen.manager.model.user.User;
+import org.springframework.security.core.Authentication;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -26,8 +28,11 @@ public interface OrderService {
 
 	boolean delete(Long id);
 	void deleteAllDone();
+
 	void deleteDoneOfUser(Optional<User> id);
 	void deleteDoneOfUserById(Long id);
 	void deleteDoneOfUserByUsername(String username);
 
+	List<Order> getOrders(Map<String, String> params, Authentication auth);
+	Map<Integer, Long> getOrdersCount(Map<String, String> params, Authentication auth);
 }

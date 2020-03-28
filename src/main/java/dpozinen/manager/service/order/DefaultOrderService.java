@@ -9,18 +9,19 @@ import dpozinen.manager.model.user.User;
 import dpozinen.manager.model.user.Worker;
 import dpozinen.manager.repo.OrderRepo;
 import dpozinen.manager.service.user.UserService;
+import dpozinen.manager.util.Exceptions;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Supplier;
+import java.time.temporal.IsoFields;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -92,20 +93,13 @@ public class DefaultOrderService implements OrderService {
 	}
 
 	private void findById(Client[] client, String receivedClient) {
-		Optional<User> byId = userService.getById(Long.valueOf(receivedClient));
-		client[0] = byId.map(User::toClient).orElseThrow(() -> {
-			String notFoundLog = "Client by id %s Not Found".formatted(receivedClient);
-			return new IllegalArgumentException(notFoundLog);
-		});
+		Long id = Long.valueOf(receivedClient);
+		Optional<User> byId = userService.getById(id);
+		client[0] = byId.map(User::toClient).orElseThrow(Exceptions.userNotFound(id));
 	}
 
 	private Worker getCurrentWorker(String workerName) {
-		Supplier<IllegalStateException> workerNotFoundException = () -> {
-			String log = "Could not find currently logged in user by name %s".formatted(workerName);
-			return new IllegalStateException(log);
-		};
-
-		User user = userService.getByUsername(workerName).orElseThrow(workerNotFoundException);
+		User user = userService.getByUsername(workerName).orElseThrow(Exceptions.currentUserNotFound(workerName));
 		return user.toWorker();
 	}
 
@@ -160,6 +154,46 @@ public class DefaultOrderService implements OrderService {
 	}
 
 	@Override
+	public List<Order> getOrders(Map<String, String> params, Authentication auth) {
+		if (params.containsKey("period")) {
+			var period = params.get("period");
+			var periodLength = params.containsKey("periodLength") ? -Long.parseLong(params.get("periodLength")) : -1;
+
+			var username = params.getOrDefault("username", auth == null ? "dpozinen" : auth.getName());
+			var user = userService.getByUsername(username).orElseThrow(Exceptions.userNotFound(username));
+			var userId = user.getId();
+
+			if (user.isClient())
+				return orderRepo.findOrdersOfClient(period, periodLength, userId);
+			else
+				return orderRepo.findOrdersOfWorker(period, periodLength, userId);
+		}
+		return List.of();
+	}
+
+	@Override
+	public Map<Integer, Long> getOrdersCount(Map<String, String> params, Authentication auth) {
+		var orders = getOrders(params, auth);
+		var period = params.get("period");
+		return orders.stream()
+					 .map(o -> getPeriod(o, period))
+					 .collect(groupingBy(o -> o, Collectors.counting()));
+	}
+
+	private int getPeriod(Order o, String period) {
+		LocalDateTime createdDate = o.getCreatedDate();
+		return switch (period) {
+			case "year": yield createdDate.getYear();
+			case "day": yield createdDate.getDayOfYear();
+			case "week": yield createdDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+			case "hour": yield createdDate.getHour();
+			case "minute": yield createdDate.getMinute();
+			case "month":
+			default: yield createdDate.getMonthValue();
+		};
+	}
+
+	@Override
 	public void deleteDoneOfUser(Optional<User> user) {
 		if (user.isPresent()) {
 			User u = user.get();
@@ -175,6 +209,6 @@ public class DefaultOrderService implements OrderService {
 
 	@Override
 	public Optional<Order> edit(Order order) {
-		throw new UnsupportedOperationException("Edits not implemented yet");
+		throw new UnsupportedOperationException("Not implemented yet");
 	}
 }
