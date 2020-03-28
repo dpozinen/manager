@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,6 +27,18 @@ public class OrderController {
 	public OrderController(OrderService orderService, UserService userService) {
 		this.orderService = orderService;
 		this.userService = userService;
+	}
+
+	@GetMapping("")
+	public ResponseEntity<List<Order>> orders(@RequestParam Map<String, String> params, Authentication auth) {
+		var data = orderService.getOrders(params, auth);
+		return new ResponseEntity<>(data, HttpStatus.OK);
+	}
+
+	@GetMapping("/count")
+	public ResponseEntity<List<Order>> ordersCount(@RequestParam Map<String, String> params, Authentication auth) {
+		var data = orderService.getOrders(params, auth);
+		return new ResponseEntity<>(data, HttpStatus.OK);
 	}
 
 	@GetMapping("/queued")
