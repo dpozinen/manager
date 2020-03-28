@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -30,4 +31,39 @@ public interface OrderRepo extends CrudRepository<Order, Long> {
 	@Transactional @Modifying
 	@Query("DELETE FROM Order WHERE workState = 'DONE' and client.id = :id")
 	void deleteAllDoneOfClient(@Param("id") Long id);
+
+	@Query("""
+            SELECT o FROM Order o WHERE
+            	o.client.id = :id
+            	AND
+            	o.createdDate >= DATEADD(:period, :periodLength, CURRENT_DATE)
+            	ORDER BY o.createdDate
+			""")
+	List<Order> findOrdersOfClient(@Param("period") String period,
+								   @Param("periodLength") long periodLength,
+								   @Param("id") Long id
+	);
+
+	@Query("""
+            SELECT o FROM Order o WHERE
+            	o.worker.id = :id
+            	AND
+            	o.createdDate >= DATEADD(:period, :periodLength, CURRENT_DATE)
+            	ORDER BY o.createdDate
+			"""
+	)
+	List<Order> findOrdersOfWorker(@Param("period") String period,
+								   @Param("periodLength") long periodLength,
+								   @Param("id") Long id
+	);
+
+	@Query(value = """
+			          SELECT  * FROM "order" o WHERE
+			          "worker_id" = 1
+			          AND
+			          "created_date" >= DATEADD(month, -10000, CURRENT_DATE)
+			""",
+			nativeQuery = true
+	)
+	List<Order> test();
 }
