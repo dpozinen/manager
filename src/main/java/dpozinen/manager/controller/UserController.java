@@ -4,6 +4,8 @@ import dpozinen.manager.model.user.Client;
 import dpozinen.manager.model.user.User;
 import dpozinen.manager.model.user.Worker;
 import dpozinen.manager.service.user.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +13,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -97,6 +101,22 @@ public class UserController {
 	@RequestMapping("/forbidden")
 	public String error403() {
 		return "/403";
+	}
+
+	@PostMapping("/checkUsername")
+	public ResponseEntity<Map<String, String>> checkUsername(@RequestBody String username) {
+		Map<String, String> ret = new HashMap<>();
+
+		if (!username.matches("\\w+")) {
+			ret.put("err", "Username has invalid characters: " + username.replaceAll("\\w+", ""));
+		} else {
+			service.getByUsername(username)
+					.ifPresentOrElse(
+							(u) -> ret.put("err", "Username is already taken"),
+							() -> ret.put("err", "")
+					);
+		}
+		return new ResponseEntity<>(ret, HttpStatus.OK);
 	}
 
 }
