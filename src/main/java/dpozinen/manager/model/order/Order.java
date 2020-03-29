@@ -21,7 +21,6 @@ public @Data class Order {
 
 	private BigDecimal price;
 	private LocalDateTime createdDate;
-	@Lob
 	private String notes;
 
 	@Enumerated(value = EnumType.STRING)
