@@ -10,6 +10,7 @@ import dpozinen.manager.model.user.Worker;
 import dpozinen.manager.repo.OrderRepo;
 import dpozinen.manager.service.user.UserService;
 import dpozinen.manager.util.Exceptions;
+import dpozinen.manager.util.Validator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -35,11 +36,13 @@ public class DefaultOrderService implements OrderService {
 	private final OrderRepo orderRepo;
 	private final UserService userService;
 	private final EntityManager entityManager;
+	private final Validator validate;
 
-	public DefaultOrderService(OrderRepo orderRepo, UserService userService, EntityManager entityManager) {
+	public DefaultOrderService(OrderRepo orderRepo, UserService userService, EntityManager entityManager, Validator validate) {
 		this.orderRepo = orderRepo;
 		this.userService = userService;
 		this.entityManager = entityManager;
+		this.validate = validate;
 	}
 
 	@Override
@@ -158,21 +161,18 @@ public class DefaultOrderService implements OrderService {
 
 	@Override
 	public List<Order> getOrders(Map<String, String> params, Authentication auth) {
-		if (params.containsKey("period")) {
-			var period = params.get("period");
-			var periodLength = params.containsKey("periodLength") ? Long.parseLong(params.get("periodLength")) : 1;
+		validate.getOrders(params);
+		var period = params.get("period");
+		var periodLength = params.containsKey("periodLength") ? Long.parseLong(params.get("periodLength")) : 1;
 
-			var username = params.getOrDefault("username", auth == null ? "dpozinen" : auth.getName());
-			var user = userService.getByUsername(username).orElseThrow(Exceptions.userNotFound(username));
-			var userId = user.getId();
+		var username = params.getOrDefault("username", auth == null ? "dpozinen" : auth.getName());
+		var user = userService.getByUsername(username).orElseThrow(Exceptions.userNotFound(username));
+		var userId = user.getId();
 
-			return findOrdersOfUser(user.isWorker(), period, periodLength, userId);
-		}
-		return List.of();
+		return findOrdersOfUser(user.isWorker(), period, periodLength, userId);
 	}
 
 	private List<Order> findOrdersOfUser(boolean isWorker, String period, long periodLength, Long userId) {
-
 		String query = """
 				       	SELECT * FROM "order" WHERE
 				        %s = %s
@@ -201,8 +201,7 @@ public class DefaultOrderService implements OrderService {
 			case "week": yield createdDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
 			case "hour": yield createdDate.getHour();
 			case "minute": yield createdDate.getMinute();
-			case "month":
-			default: yield createdDate.getMonthValue();
+			case "month": default: yield createdDate.getMonthValue();
 		};
 	}
 
