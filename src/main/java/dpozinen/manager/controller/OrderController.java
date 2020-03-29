@@ -36,8 +36,8 @@ public class OrderController {
 	}
 
 	@GetMapping("/count")
-	public ResponseEntity<List<Order>> ordersCount(@RequestParam Map<String, String> params, Authentication auth) {
-		var data = orderService.getOrders(params, auth);
+	public ResponseEntity<Map<Integer, Long>> ordersCount(@RequestParam Map<String, String> params, Authentication auth) {
+		var data = orderService.getOrdersCount(params, auth);
 		return new ResponseEntity<>(data, HttpStatus.OK);
 	}
 
