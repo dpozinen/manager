@@ -4,7 +4,10 @@ function getChartData() {
   var token = $("meta[name='_csrf']").attr("content");
   var header = $("meta[name='_csrf_header']").attr("content");
 
-  var url = "/order/count?period=month;
+  var period = $('#period').val();
+  var periodLength = $('#periodLength').val();
+
+  var url = "/order/count?period=" + period + "&periodLength=" + periodLength;
 
   xhr.onload = function () {
     let arr;
@@ -12,11 +15,7 @@ function getChartData() {
       arr = [];
     } else {
       var response = JSON.parse(xhr.response);
-
-      for ()
-
-      arr = [ response[1], response[2], response['W3'], response['W4'] ];
-      drawChart(arr);
+      drawChart(response, period, periodLength);
     }
   };
 
@@ -26,19 +25,33 @@ function getChartData() {
   xhr.send();
 }
 
-function drawChart($data) {
+var chart;
+
+function drawChart(response, period, periodLength) {
+
+  var labels = Object.keys(response);
+  var data = Object.values(response);
+
+  var min = Math.min(...data);
+  var max = Math.max(...data);
+
+  var total = data.reduce((a, b) => a + b, 0);
+  $('#orders-this-period').text("Total orders: " + total);
 
   var ctxL = document.getElementById("lineChart").getContext('2d');
-  var myLineChart = new Chart(ctxL, {
+
+  if (chart != null) { chart.destroy(); }
+
+  chart = new Chart(ctxL, {
     type: 'line',
     data: {
-      labels: [W1, W2, W3, W4],
+      labels: labels,
       datasets: [
         {
           fill: false,
           borderColor: "#673ab7",
           pointBackgroundColor: "#673ab7",
-          data: $data
+          data: data
         }
       ]
     },
@@ -69,8 +82,8 @@ function drawChart($data) {
           ticks: {
             maxTicksLimit: 5,
             padding: 15,
-            min: 880,
-            max: 890
+            min: min,
+            max: max
           }
         }]
       }
