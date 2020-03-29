@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.time.temporal.IsoFields;
 import java.util.*;
@@ -33,10 +34,12 @@ public class DefaultOrderService implements OrderService {
 
 	private final OrderRepo orderRepo;
 	private final UserService userService;
+	private final EntityManager entityManager;
 
-	public DefaultOrderService(OrderRepo orderRepo, UserService userService) {
+	public DefaultOrderService(OrderRepo orderRepo, UserService userService, EntityManager entityManager) {
 		this.orderRepo = orderRepo;
 		this.userService = userService;
+		this.entityManager = entityManager;
 	}
 
 	@Override
@@ -157,18 +160,28 @@ public class DefaultOrderService implements OrderService {
 	public List<Order> getOrders(Map<String, String> params, Authentication auth) {
 		if (params.containsKey("period")) {
 			var period = params.get("period");
-			var periodLength = params.containsKey("periodLength") ? -Long.parseLong(params.get("periodLength")) : -1;
+			var periodLength = params.containsKey("periodLength") ? Long.parseLong(params.get("periodLength")) : 1;
 
 			var username = params.getOrDefault("username", auth == null ? "dpozinen" : auth.getName());
 			var user = userService.getByUsername(username).orElseThrow(Exceptions.userNotFound(username));
 			var userId = user.getId();
 
-			if (user.isClient())
-				return orderRepo.findOrdersOfClient(period, periodLength, userId);
-			else
-				return orderRepo.findOrdersOfWorker(period, periodLength, userId);
+			return findOrdersOfUser(user.isWorker(), period, periodLength, userId);
 		}
 		return List.of();
+	}
+
+	private List<Order> findOrdersOfUser(boolean isWorker, String period, long periodLength, Long userId) {
+
+		String query = """
+				       	SELECT * FROM "order" WHERE
+				        %s = %s
+				        AND
+				        created_date >= now() - interval ' %d %s '
+				        ORDER BY created_date;
+				""".formatted(isWorker ? "worker_id" : "client_id", userId, periodLength, period);
+
+		return (List<Order>) entityManager.createNativeQuery(query, Order.class).getResultList();
 	}
 
 	@Override
@@ -182,7 +195,7 @@ public class DefaultOrderService implements OrderService {
 
 	private int getPeriod(Order o, String period) {
 		LocalDateTime createdDate = o.getCreatedDate();
-		return switch (period) {
+		return switch (period.toLowerCase()) {
 			case "year": yield createdDate.getYear();
 			case "day": yield createdDate.getDayOfYear();
 			case "week": yield createdDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
