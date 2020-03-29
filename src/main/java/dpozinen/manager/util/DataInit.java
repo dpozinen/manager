@@ -41,9 +41,9 @@ public class DataInit {
 	@EventListener
 	public void populateOrdersAndUsers(ContextRefreshedEvent event) {
 		Worker me = (Worker) new Worker().setSalary(BigDecimal.TEN).setRole(Role.DEV).setName("Dar")
-											  .setLastName("Poz").setPassword(encoder.encode("123"))
-											  .setUsername("dpozinen").setFatherName("Andrii")
-											  .setPhone("+38(050) 385 0660");
+										 .setLastName("Poz").setPassword(encoder.encode("123"))
+										 .setUsername("dpozinen").setFatherName("Andrii")
+										 .setPhone("+38(050) 385 0660");
 
 		Stream.generate(() -> randOrder().setClient(randClient())).limit(10).forEach(me::addOrder);
 		userRepo.save(me);
@@ -103,7 +103,7 @@ public class DataInit {
 	}
 
 	private LocalDateTime dateGen() {
-		int y = ThreadLocalRandom.current().nextInt(1000, 2040);
+		int y = ThreadLocalRandom.current().nextInt(2010, 2020);
 		int mo = ThreadLocalRandom.current().nextInt(1, 12);
 		int d = ThreadLocalRandom.current().nextInt(1, 27);
 		int h = ThreadLocalRandom.current().nextInt(1, 24);
