@@ -33,11 +33,15 @@ public class UserController {
 	}
 
 	@GetMapping("/{username}")
-	public String getUser(@PathVariable String username) {
+	public String getUser(@PathVariable String username, Model model) {
 		Optional<Long> id = service.getByUsername(username).map(User::getId);
 
-		if (id.isPresent()) return "forward:/user/id/%d".formatted(id.get());
-		else return "/user/notFound";
+		if (id.isPresent())
+			return "forward:/user/id/%d".formatted(id.get());
+		else {
+			model.addAttribute("msg", "User by username %s was not found".formatted(username));
+			return "/error/404";
+		}
 	}
 
 	@GetMapping("/id/{id}")
@@ -45,7 +49,8 @@ public class UserController {
 		var user = service.getById(id);
 
 		if (user.isEmpty()) {
-			return "/user/notFound";
+			model.addAttribute("msg", "User by id %d was not found".formatted(id));
+			return "/error/404";
 		} else {
 			model.addAttribute("orders", user.get().getOrders());
 			model.addAttribute("clients", service.clients());
@@ -79,16 +84,19 @@ public class UserController {
 	}
 
 	@GetMapping("/register")
-	public String registerClient(Model model) {
-		model.addAttribute("client", new Client());
+	public String registerClient() {
 		return "/user/register";
 	}
 
 	@PostMapping("/register")
-	public String registerClient(Map<String, String> client) {
-		validate.registerForm(client);
-		service.saveClient(client);
-		return "/user/login";
+	public ResponseEntity<Void> registerClient(@RequestBody Map<String, String> client) {
+		if (validate.registerForm(client).isEmpty()) {
+			var username = client.getOrDefault("username", client.getOrDefault("email", "").replaceAll("@(?<=@).+", ""));
+			client.put("username", username); // if username was empty - default to email before @
+			service.saveClient(client);
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 	}
 
 	@GetMapping("/login")
@@ -107,17 +115,11 @@ public class UserController {
 		return new RedirectView("/user/login?error");
 	}
 
-	@RequestMapping("/forbidden")
-	public String error403() {
-		return "/403";
-	}
-
 	@PostMapping("/checkForm")
 	public ResponseEntity<Map<String, String>> checkForm(@RequestBody Map<String, String> form) {
 		var errors = validate.registerForm(form);
 
-		return errors.isEmpty() ? new ResponseEntity<>(HttpStatus.OK) :
-				new ResponseEntity<>(errors, HttpStatus.UNPROCESSABLE_ENTITY);
+		return new ResponseEntity<>(errors, errors.isEmpty() ? HttpStatus.OK : HttpStatus.UNPROCESSABLE_ENTITY);
 	}
 
 }
