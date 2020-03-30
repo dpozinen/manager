@@ -7,6 +7,7 @@ import dpozinen.manager.service.user.UserService;
 import dpozinen.manager.util.Validator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -84,8 +85,9 @@ public class UserController {
 	}
 
 	@GetMapping("/register")
-	public String registerClient() {
-		return "/user/register";
+	public String registerClient(Authentication authentication) {
+		if (authentication != null) return "redirect:/me";
+		else return "/user/register";
 	}
 
 	@PostMapping("/register")
@@ -100,8 +102,9 @@ public class UserController {
 	}
 
 	@GetMapping("/login")
-	public String login() {
-		return "/user/login";
+	public String login(Authentication authentication) {
+		if (authentication != null) return "redirect:/me";
+		else return "/user/login";
 	}
 
 	@GetMapping("/logout")
