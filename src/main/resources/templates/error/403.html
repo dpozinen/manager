@@ -1,15 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">>
 <head>
     <meta charset="UTF-8">
-    <title>Forbidden</title>
+    <title>Not Found</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <!-- DataTables CSS -->
+    <link th:href="@{/md/css/addons/datatables.min.css}" rel="stylesheet">
+    <!-- DataTables JS -->
+    <script th:src="@{/md/js/addons/datatables.min.js}" type="text/javascript"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.9/js/material.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.9/js/ripples.min.js"></script>
+    <script type="text/javascript" th:src="@{/md/js/mdb.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/md/css/mdb.min.css}">
+    <style>
+        .text {
+            color: #616161
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-    <div>
-        <span>
-            FORBIDDEN
-        </span>
+
+<div class="container-fluid text-center">
+    <div class="row justify-content-center">
+        <div class="col-auto text-center">
+            <p class="font-weight-lighter text" style="font-weight: 100; font-size:500px;">403</p>
+            <p class="font-weight-lighter text" style="font-size:30px;">
+                You are not authorized to view what you requested for
+            </p>
+            <p class="font-weight-light text">Message:</p>
+            <p class="font-weight-light text" th:text="${msg}"></p>
+            <i class="fas fa-4x fa-arrow-circle-left text" style="cursor: pointer;" onclick="window.history.back();"></i>
+        </div>
     </div>
 </div>
 </body>
