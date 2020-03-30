@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		(enableH2 ? enableH2(http) : http)
 				.authorizeRequests()
-				.antMatchers("/user/register", "/user/login", "/user/checkUsername").permitAll()
+				.antMatchers("/user/register", "/user/login", "/user/checkForm").permitAll()
 				.antMatchers("/h2/**").hasRole(Role.DEV.toString())
 				.antMatchers("/user/all", "/user/worker/save").hasAnyRole(Role.ADMIN.toString(), Role.DEV.toString())
 				.antMatchers("/user/*").hasAnyRole(Role.USER.toString(), Role.ADMIN.toString(), Role.DEV.toString())

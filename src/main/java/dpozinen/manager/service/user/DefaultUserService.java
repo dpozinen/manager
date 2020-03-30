@@ -1,14 +1,17 @@
 package dpozinen.manager.service.user;
 
+import com.google.gson.Gson;
 import dpozinen.manager.model.user.Client;
 import dpozinen.manager.model.user.User;
 import dpozinen.manager.model.user.Worker;
 import dpozinen.manager.repo.UserRepo;
+import dpozinen.manager.util.Validator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.StreamSupport;
@@ -23,10 +26,12 @@ public class DefaultUserService implements UserService {
 
 	private final UserRepo userRepo;
 	private final PasswordEncoder passwordEncoder;
+	private Validator validate;
 
-	public DefaultUserService(UserRepo userRepo, @Lazy PasswordEncoder passwordEncoder) {
+	public DefaultUserService(UserRepo userRepo, @Lazy PasswordEncoder passwordEncoder, Validator validate) {
 		this.userRepo = userRepo;
 		this.passwordEncoder = passwordEncoder;
+		this.validate = validate;
 	}
 
 	@Override
@@ -73,11 +78,16 @@ public class DefaultUserService implements UserService {
 	}
 
 	@Override
-	public User getByEmail(String email) {
-		return userRepo.findByUsername(email).orElseGet(() -> {
-			log.warn("Could not find user by email: " + email);
-			return User.EMPTY;
-		});
+	public Optional<User> getByEmail(String email) {
+		return userRepo.findByUsername(email);
+	}
+
+	@Override
+	public void saveClient(Map<String, String> form) {
+		var gson = new Gson();
+
+		Client client = gson.fromJson(gson.toJson(form), Client.class);
+		save(client);
 	}
 
 }

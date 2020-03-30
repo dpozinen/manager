@@ -4,6 +4,7 @@ import dpozinen.manager.model.user.Client;
 import dpozinen.manager.model.user.User;
 import dpozinen.manager.model.user.Worker;
 import dpozinen.manager.service.user.UserService;
+import dpozinen.manager.util.Validator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,7 +14,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -25,9 +25,11 @@ import java.util.Optional;
 public class UserController {
 
 	private final UserService service;
+	private final Validator validate;
 
-	public UserController(UserService service) {
+	public UserController(UserService service, Validator validate) {
 		this.service = service;
+		this.validate = validate;
 	}
 
 	@GetMapping("/{username}")
@@ -82,6 +84,13 @@ public class UserController {
 		return "/user/register";
 	}
 
+	@PostMapping("/register")
+	public String registerClient(Map<String, String> client) {
+		validate.registerForm(client);
+		service.saveClient(client);
+		return "/user/login";
+	}
+
 	@GetMapping("/login")
 	public String login() {
 		return "/user/login";
@@ -103,20 +112,12 @@ public class UserController {
 		return "/403";
 	}
 
-	@PostMapping("/checkUsername")
-	public ResponseEntity<Map<String, String>> checkUsername(@RequestBody String username) {
-		Map<String, String> ret = new HashMap<>();
+	@PostMapping("/checkForm")
+	public ResponseEntity<Map<String, String>> checkForm(@RequestBody Map<String, String> form) {
+		var errors = validate.registerForm(form);
 
-		if (!username.matches("\\w+")) {
-			ret.put("err", "Username has invalid characters: " + username.replaceAll("\\w+", ""));
-		} else {
-			service.getByUsername(username)
-					.ifPresentOrElse(
-							(u) -> ret.put("err", "Username is already taken"),
-							() -> ret.put("err", "")
-					);
-		}
-		return new ResponseEntity<>(ret, HttpStatus.OK);
+		return errors.isEmpty() ? new ResponseEntity<>(HttpStatus.OK) :
+				new ResponseEntity<>(errors, HttpStatus.UNPROCESSABLE_ENTITY);
 	}
 
 }
