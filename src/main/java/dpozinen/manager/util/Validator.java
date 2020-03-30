@@ -41,19 +41,21 @@ public class Validator {
 
 	public Map<String, String> registerForm(Map<String, String> form) {
 		var errors = new HashMap<String, String>();
+		form.remove("username", "");
 
-		var username = form.getOrDefault("username", form.getOrDefault("e-mail", ""));
+		var username = form.getOrDefault("username", form.getOrDefault("email", "").replaceAll("@(?<=@).+", ""));
 		if (username.isEmpty())
 			errors.put("username", "Username and email are both empty");
 		else if (!username.matches("\\w+"))
-			errors.put("username", "Username has invalid characters: " + username.replaceAll("\\w+", ""));
+			errors.put("username", "Username has invalid characters: [%s] ".formatted(username.replaceAll("\\w+", "")));
 		else
 			userService.getByUsername(username).ifPresent(u -> errors.put("username", "Username is already taken"));
 
-		var password = form.get("password");
+		var password = form.getOrDefault("password", "");
 		if (password.equals("password")) errors.put("password", "Password cannot be 'password'");
+		if (password.isEmpty() || password.matches(".*\\s.*")) errors.put("password", "Password cannot have whitespaces");
 
-		List<String> credentials = List.of("name", "lastname", "fathername");
+		List<String> credentials = List.of("name", "lastName", "fatherName");
 		form.entrySet().stream()
 			.filter(e -> credentials.contains(e.getKey()))
 			.filter(e -> !e.getValue().matches("\\p{L}+") && !e.getValue().isEmpty())
