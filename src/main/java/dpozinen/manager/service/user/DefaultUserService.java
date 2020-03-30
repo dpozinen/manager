@@ -57,14 +57,20 @@ public class DefaultUserService implements UserService {
 
 	@Override
 	public Client save(Client client) {
-		client.setPassword(passwordEncoder.encode(client.getPassword()));
-		return userRepo.save(client);
+		if (client != null) {
+			client.setPassword(passwordEncoder.encode(client.getPassword()));
+			return userRepo.save(client);
+		}
+		return null;
 	}
 
 	@Override
 	public Worker save(Worker worker) {
-		worker.setPassword(passwordEncoder.encode(worker.getPassword()));
-		return userRepo.save(worker);
+		if (worker != null) {
+			worker.setPassword(passwordEncoder.encode(worker.getPassword()));
+			return userRepo.save(worker);
+		}
+		return null;
 	}
 
 	@Override
