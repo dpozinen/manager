@@ -45,34 +45,39 @@
         <div class="col-3">
             <form action="" id="register" onsubmit="register(event);">
                 <div class="md-form md-outline required">
-                    <input type="text" id="name" name="name" class="form-control" required>
+                    <input type="text" id="name" name="name" class="form-control" maxlength="20" required>
                     <label for="name">Name</label>
+                    <small class="name-help text-muted" id="name-help" hidden="hidden"></small>
                 </div>
                 <div class="md-form md-outline required">
-                    <input type="text" id="lastname" name="lastname" class="form-control" required>
+                    <input type="text" id="lastname" name="lastname" class="form-control" maxlength="20" required>
                     <label for="name">Last Name</label>
+                    <small class="lastname-help text-muted" id="lastname-help" hidden="hidden"></small>
                 </div>
                 <div class="md-form md-outline">
                     <input type="text" id="fathername" name="fathername" class="form-control">
                     <label for="fathername">Father's Name</label>
+                    <small class="fathername-help text-muted" id="fathername-help" hidden="hidden"></small>
                 </div>
                 <div class="md-form md-outline required">
-                    <input type="text" id="phone" name="phone" class="form-control" required>
+                    <input type="text" id="phone" name="phone" class="form-control" maxlength="15" required>
                     <label for="phone">Phone</label>
+                    <small class="phone-help text-muted" id="phone-help" hidden="hidden"></small>
                 </div>
                 <div class="md-form md-outline required">
                     <input type="email" id="email" name="email" class="form-control" required>
                     <label for="email">e-mail</label>
+                    <small class="email-help text-muted" id="email-help" hidden="hidden"></small>
                 </div>
                 <div class="md-form md-outline">
                     <input type="text" id="username" name="username" class="form-control">
                     <label for="username">username</label>
-                    <small class="text-muted" id="username-help">By default the username will be the email before the @</small>
+                    <small class="username-help text-muted" id="username-help">By default the username will be the email before the @</small>
                 </div>
                 <div class="md-form md-outline required">
-                    <input type="password" id="password" name="password" class="form-control" required minlength=6>
+                    <input type="password" id="password" name="password" class="form-control" required minlength=6 maxlength="20">
                     <label for="password">Password</label>
-                    <small class="text-muted">Has to be at least 6 characters long</small>
+                    <small class="password-help text-muted" id="password-help">Has to be at least 6 characters long</small>
                 </div>
                 <center>
                     <button type="reset" class="btn btn-md">Reset</button>
@@ -93,31 +98,46 @@
             return obj;
         }, {});
 
-        var username = form['username'];
         var token = $("meta[name='_csrf']").attr("content");
         var h = $("meta[name='_csrf_header']").attr("content");
 
         var headers = { [h] : token, "Content-Type" : "application/json" };
 
+        var currentInvalidIds = $('.invalid');
+
         $.ajax({
-            url: '/user/checkUsername',
-            data: username,
+            url: '/user/checkForm',
+            data: JSON.stringify(form),
+            dataType : 'json',
             method: 'post',
             headers: headers,
             success: function(data) {
-                if (data['err']) {
-                    $('#username').attr('class', 'my-1 form-control validate invalid');
-                    $('#username-help').text('Username already taken.');
-                    return false;
-                } else {
-                    $.ajax({
-                        url: '/user/login',
-                        data: form,
-                        method: 'post',
-                        headers: headers
-                    });
-                    return false;
-                }
+                $.ajax({
+                    url: '/user/login',
+                    data: form,
+                    method: 'get',
+                    headers: headers
+                });
+                return false;
+            },
+            error: function(data) {
+                currentInvalidIds.each(function() {
+                    var id = $(this).attr('id')
+                    if (data.responseJSON[id] == null) {
+                        $(this).attr('class', 'my-1 form-control novalidate valid');
+                        var helpId = '#' + id + '-help';
+                        $(helpId).hide();
+                    }
+                });
+
+                $.each(data.responseJSON, function(k, v) {
+                    var name = k;
+                    var helpId = '#' + name + '-help';
+                    var help = $(helpId);
+                    help.removeAttr('hidden');
+                    help.text(v);
+                    $('#' + k).attr('class', 'my-1 form-control novalidate invalid');
+                });
             }
         });
         return false;
