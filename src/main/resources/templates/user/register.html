@@ -50,14 +50,14 @@
                     <small class="name-help text-muted" id="name-help" hidden="hidden"></small>
                 </div>
                 <div class="md-form md-outline required">
-                    <input type="text" id="lastname" name="lastname" class="form-control" maxlength="20" required>
+                    <input type="text" id="lastName" name="lastName" class="form-control" maxlength="20" required>
                     <label for="name">Last Name</label>
-                    <small class="lastname-help text-muted" id="lastname-help" hidden="hidden"></small>
+                    <small class="lastName-help text-muted" id="lastName-help" hidden="hidden"></small>
                 </div>
                 <div class="md-form md-outline">
-                    <input type="text" id="fathername" name="fathername" class="form-control">
-                    <label for="fathername">Father's Name</label>
-                    <small class="fathername-help text-muted" id="fathername-help" hidden="hidden"></small>
+                    <input type="text" id="fatherName" name="fatherName" class="form-control">
+                    <label for="fatherName">Father's Name</label>
+                    <small class="fatherName-help text-muted" id="fatherName-help" hidden="hidden"></small>
                 </div>
                 <div class="md-form md-outline required">
                     <input type="text" id="phone" name="phone" class="form-control" maxlength="15" required>
@@ -110,15 +110,24 @@
             data: JSON.stringify(form),
             dataType : 'json',
             method: 'post',
+            contentType: "application/json", // to fix '??' in form jQuery panic
             headers: headers,
             success: function(data) {
-                $.ajax({
-                    url: '/user/login',
-                    data: form,
-                    method: 'get',
-                    headers: headers
+                currentInvalidIds.each(function() {
+                    var id = $(this).attr('id')
+                    $(this).attr('class', 'my-1 form-control novalidate valid');
+                    var helpId = '#' + id + '-help';
+                    $(helpId).hide();
                 });
-                return false;
+                $.ajax({
+                    url: '/user/register',
+                    data: JSON.stringify(form),
+                    method: 'post',
+                    headers: headers,
+                    success: function() {
+                        window.location.replace('/user/login');
+                    }
+                });
             },
             error: function(data) {
                 currentInvalidIds.each(function() {
@@ -135,8 +144,9 @@
                     var helpId = '#' + name + '-help';
                     var help = $(helpId);
                     help.removeAttr('hidden');
-                    help.text(v);
                     $('#' + k).attr('class', 'my-1 form-control novalidate invalid');
+                    help.show(v);
+                    help.text(v);
                 });
             }
         });
