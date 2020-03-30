@@ -21,6 +21,11 @@ public class MainController {
 		return "/error/403";
 	}
 
+	@RequestMapping({"/500", "/error"})
+	public String error500() {
+		return "/error/500";
+	}
+
 	@GetMapping("/me")
 	public String me(Authentication authentication) {
 		if (authentication != null) {
