@@ -44,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		(enableH2 ? enableH2(http) : http)
 				.authorizeRequests()
 				.antMatchers("/user/register", "/user/login", "/user/checkForm").permitAll()
-				.antMatchers("/h2/**").hasRole(Role.DEV.toString())
+				.antMatchers("/h2/**", "/actuator/**").hasRole(Role.DEV.toString())
 				.antMatchers("/user/all", "/user/worker/save").hasAnyRole(Role.ADMIN.toString(), Role.DEV.toString())
 				.antMatchers("/user/*").hasAnyRole(Role.USER.toString(), Role.ADMIN.toString(), Role.DEV.toString())
 				.anyRequest().authenticated()
