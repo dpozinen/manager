@@ -18,12 +18,14 @@ public class MainController {
 
 	@RequestMapping("/forbidden")
 	public String error403() {
-		return "/403";
+		return "/error/403";
 	}
 
 	@GetMapping("/me")
 	public String me(Authentication authentication) {
-		String name = authentication.getName();
-		return "forward:/user/%s".formatted(name);
+		if (authentication != null) {
+			String name = authentication.getName();
+			return "forward:/user/%s".formatted(name);
+		} else return "/user/login";
 	}
 }
