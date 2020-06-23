@@ -4,5 +4,5 @@ A project that gives basic control over a repair service with users, clients and
 Has some auth/security/role features.<br>
 Uses material design bootstrap, and a mix of Thymeleaf and ajax. Spring boot, security and data for postgres.
 
-A showcase of the features can be found ![here](https://imgur.com/XsWCN3T)
+A showcase of the features can be found ![here](https://imgur.com/PxXl0AA)
 
